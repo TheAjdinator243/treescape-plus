@@ -1,0 +1,2206 @@
+@import 'tailwindcss';
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Dizajn sistem — Tailwind v4 se konfiguriše ovdje, u CSS-u.
+   Nema tailwind.config.js; sve što je u @theme postaje Tailwind klasa
+   (npr. --color-forest-700 → `bg-forest-700`, `text-forest-700`).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* Šuma — glavna boja brenda */
+  --color-bark-950: #101a15;
+  --color-forest-900: #172f26;
+  --color-forest-800: #1f4436;
+  --color-forest-700: #2a5a47;
+  --color-forest-600: #37735b;
+  --color-forest-500: #4a8f72;
+  --color-moss-400: #6fae8f;
+  --color-moss-300: #9ccbb2;
+  --color-moss-100: #dcece3;
+
+  /* Pijesak i krem — pozadine i topli tonovi */
+  --color-sand-50: #faf7f1;
+  --color-sand-100: #f4ede0;
+  --color-sand-200: #e9dcc7;
+  --color-sand-300: #d9c6a6;
+
+  /* Žar — akcent za dugmad i naglaske */
+  --color-ember-400: #d99a6c;
+  --color-ember-500: #c47a45;
+  --color-ember-600: #a86232;
+
+  /* Tekst */
+  --color-ink-900: #221d18;
+  --color-ink-700: #453d35;
+  --color-ink-500: #6b6157;
+  --color-ink-400: #8d8377;
+
+  /* Statusi */
+  --color-success-600: #2f7d54;
+  --color-warn-600: #b7791f;
+  --color-danger-600: #b3402f;
+
+  /* ── "Pro" izgled (/treescapepro) ──────────────────────────────────────
+     Druga koža istog sajta: isti tekst, isti podaci, ista baza — samo
+     skuplji izgled. Umjesto toplog pijeska i šume ide noć, slonovača i
+     mesing: manje boje, više praznog prostora, tanje linije.
+
+     Boje stoje ovdje, u @theme, a ne kao obične varijable — tako postaju
+     prave Tailwind klase (`bg-onyx-950`, `text-brass-400`) i pišu se u
+     komponentama isto kao i sve ostalo. Tailwind v4 ispisuje samo ono što
+     se stvarno koristi, pa neiskorišteni tonovi ne koštaju ništa. */
+  --color-onyx-950: #0b0c0b;
+  --color-onyx-900: #121413;
+  --color-onyx-850: #171a18;
+  --color-onyx-800: #1e2220;
+  --color-onyx-700: #2b302d;
+
+  --color-ivory-50: #f7f4ee;
+  --color-ivory-100: #ece7dd;
+  --color-ivory-200: #ddd6c8;
+  --color-ivory-400: #a89f8f;
+  --color-ivory-500: #857c6e;
+
+  /*
+   * Ploha sa sadržajima ("Šta vas čeka") — jedina koja nije crna.
+   *
+   * Duboka šumska zelena, a ne neutralna crna kao ostatak stranice: kuća se
+   * zove TreeScape i stoji u šumi, pa je ovo jedino mjesto gdje se boja imena
+   * zaista vidi. Dovoljno je tamna da mesingana rešetka na njoj svijetli, a
+   * dovoljno drugačija od okolnih ploha da se čita kao zaseban odjeljak.
+   *
+   * Ako se ikad poželi svijetla ploha umjesto ove, dovoljno je zamijeniti
+   * ovaj jedan ton (npr. pergament #ece4d4) i u ProAmenities.tsx vratiti tamne
+   * boje teksta.
+   */
+
+  --color-brass-300: #dcc492;
+  --color-brass-400: #c9a86c;
+  --color-brass-500: #ad8b55;
+
+  /* ── "Plus" izgled (/treescapeproplus) ────────────────────────────────
+     Druga koža istog sajta. Osnovna je topao pijesak i šuma; ova je
+     mesing — ova je dnevna, ali skupa: kost i duboka zimzelena, s jednim
+     jedinim toplim naglaskom (glina).
+
+     Razlika prema osnovnoj nije u tonu nego u držanju: krupnija tipografija,
+     više praznine, staklaste plohe i pokret koji prati skrol. Razlika prema
+     Razlika je što izvorno nije bježala u crno — svjetlo je ono što je činilo prijatnom
+     za goste, a ne samo lijepom za kupca.
+
+     Boje stoje u @theme, pa postaju prave Tailwind klase
+     (`bg-pine-900`, `text-clay-500`). Tailwind v4 ispisuje samo ono što se
+     stvarno koristi, pa neiskorišteni tonovi ne koštaju ništa. */
+  --color-pine-950: #081310;
+  --color-pine-900: #0f2019;
+  --color-pine-800: #163026;
+  --color-pine-700: #1e4335;
+  --color-pine-600: #2a5d49;
+  --color-pine-500: #3a7a60;
+
+  --color-sage-500: #5f9b7f;
+  --color-sage-400: #8bb9a1;
+  --color-sage-300: #b2d3c1;
+  --color-sage-100: #dcebe2;
+
+  /* Papir — pozadine. Toplije od bijele, hladnije od pijeska osnovne verzije. */
+  --color-paper-50: #fcfbf7;
+  --color-paper-100: #f5f2ea;
+  --color-paper-200: #e8e3d6;
+  --color-paper-300: #d5cdbb;
+
+  /* Glina — jedini topli naglasak. Namjerno je samo jedan: druga akcentna boja
+     je ono što premium izgled najbrže pretvori u šablon. */
+  --color-clay-600: #9c5433;
+  --color-clay-500: #b86a41;
+  --color-clay-400: #d08e64;
+
+  /* Tipografija — varijable dolaze iz next/font (vidi layout.tsx) */
+  --font-display: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-arabic-stack: var(--font-arabic), 'Noto Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+
+  /* Mekane sjene — topli ton umjesto sivog */
+  --shadow-soft: 0 1px 2px rgb(34 29 24 / 0.04), 0 8px 24px -8px rgb(34 29 24 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(34 29 24 / 0.06), 0 20px 40px -12px rgb(34 29 24 / 0.22);
+
+  /*
+   * Sjene u tri sloja, a ne u jednom — za "plus" izgled.
+   *
+   * Jedna sjena je uvijek ili premekana (pa se ne vidi) ili pretvrda (pa
+   * izgleda kao okvir). Prava kutija na stolu ima tri: usku i tamnu odmah uz
+   * ivicu, srednju koja je odiže, i široku i blijedu koja je veže za podlogu.
+   * To je jedina razlika između kartice i pravougaonika.
+   */
+  --shadow-float:
+    0 1px 1px rgb(8 19 16 / 0.04), 0 4px 8px -2px rgb(8 19 16 / 0.06),
+    0 16px 32px -12px rgb(8 19 16 / 0.14);
+  --shadow-raise:
+    0 1px 1px rgb(8 19 16 / 0.05), 0 8px 16px -4px rgb(8 19 16 / 0.1),
+    0 32px 56px -20px rgb(8 19 16 / 0.24);
+
+  --radius-xl2: 1.25rem;
+  /* Zaobljenje velikih ploha u "plus" izgledu. Kartica na 1rem i ploha na
+     2rem izgledaju kao dvije različite stvari; ovim se drže u istoj porodici. */
+  --radius-panel: 1.75rem;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Oštrije usporavanje na kraju — za pokrete koji moraju djelovati odlučno
+     (otvaranje menija, uvećavanje slike), a ne mekano kao pojavljivanje. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Osnovni stilovi ─────────────────────────────────────────────────────── */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Da sidra (#rezervacija) ne završe ispod fiksne navigacije. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+
+    /*
+     * Odakle sadržaj ulazi u obliku `slide` (vidi `motion/Reveal.tsx`).
+     *
+     * Mora biti promjenljiva, a ne broj u komponenti: u arapskom red teče
+     * zdesna nalijevo, pa bi isti pomak od -24px sadržaj gurao PREKO ivice
+     * umjesto ka njoj.
+     */
+    --reveal-slide: -24px;
+
+    /*
+     * Koliko i s koje strane ulazi novi korak u rezervaciji.
+     *
+     * Pozitivno znači "s one strane na koju se ide". Predznak se okreće u
+     * arapskom, gdje "naprijed" znači ulijevo, i još jednom pri povratku
+     * unazad — to drugo okretanje radi `data-dir` ispod.
+     */
+    --step-in: 28px;
+  }
+
+  [dir='rtl'] {
+    --reveal-slide: 24px;
+    --step-in: -28px;
+  }
+
+  /* Povratak na prethodni korak: sadržaj dolazi s one strane s koje smo i
+     došli, dakle obrnuto od kretanja naprijed. */
+  [data-dir='back'] {
+    --step-in: -28px;
+  }
+
+  [dir='rtl'] [data-dir='back'] {
+    --step-in: 28px;
+  }
+
+  body {
+    background-color: var(--color-sand-50);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Vidljiv fokus za tastaturu — bez ovoga sajt nije upotrebljiv bez miša. */
+  :focus-visible {
+    outline: 2px solid var(--color-forest-600);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-moss-300);
+    color: var(--color-forest-900);
+  }
+}
+
+
+/*
+ * Šara ne smije ići do samog ruba: gore i dolje se stapa s tamnim susjedima,
+ * pa ploha izgleda kao da je uronjena u stranicu, a ne zalijepljena na nju.
+ */
+
+/* ── "Plus" izgled: pismo ────────────────────────────────────────────────
+   Ovo stoji IZNAD arapskog bloka namjerno. Oba su
+   neslojevita i iste specifičnosti, pa odlučuje redoslijed — a arapski mora
+   pobijediti, jer ni Instrument Serif ni Manrope nemaju arapske glifove.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.plus {
+  /*
+   * Promjenljiva se razrješava na elementu na
+   * kojem je NAPISANA. Da ovo stoji u :root, tražilo bi `--font-instrument`
+   * na <html> — a nje tamo nema, jer je next/font stavlja na omotač
+   * /treescapeproplus. Vrijednost bi tiho pala na zadano pismo preglednika.
+   */
+  --font-plus-display: var(--font-instrument), Georgia, 'Times New Roman', serif;
+  --font-plus-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
+
+  font-family: var(--font-plus-sans);
+  background-color: var(--color-paper-50);
+  color: var(--color-pine-900);
+}
+
+.plus h1,
+.plus h2,
+.plus h3 {
+  font-family: var(--font-plus-display);
+  font-weight: 400;
+  /*
+   * Instrument Serif je već uzak i visokokontrastan. Skupljanje razmaka na
+   * velikim veličinama je ono što naslov pretvara iz "veliki tekst" u naslov;
+   * na sitnim bi ista vrijednost slova slijepila, ali sitnih naslova ovdje i
+   * nema — za njih postoji `.plus-kicker` ispod, u grotesku.
+   */
+  letter-spacing: -0.02em;
+}
+
+/*
+ * Izlaz iz pravila iznad: naslov koji treba da bude bez serifa.
+ *
+ * Ponegdje je i naslov zapravo sitna oznaka razmaknutim velikim slovima; tamo
+ * serif nije ni čitljiv ni na mjestu. Tailwindova klasa za pismo to ne može
+ * preokrenuti: pravilo iznad je neslojevito, a utility klase su u sloju, pa
+ * uvijek gube. Ova klasa je specifičnija od njega, pa vraća grotesk.
+ */
+.plus .plus-sans {
+  font-family: var(--font-plus-sans);
+  letter-spacing: 0;
+}
+
+/* ── "Plus" izgled: plohe i komponente ───────────────────────────────────
+   Zaobljeno i mekano, ali ne prijateljski: velika zaobljenja, vlas-okviri i
+   sjene u tri sloja.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Isti razlog kao kod `btn`: `@apply` u Tailwindu v4 prima samo
+ * prave utility klase, pa i `plus-card` mora biti @utility — inače ga
+ * `.plus-card-lift` odbije s "Cannot apply unknown utility class".
+ */
+@utility plus-card {
+  @apply rounded-panel border border-paper-200 bg-white shadow-float;
+}
+
+@utility plus-btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
+         text-sm font-semibold tracking-tight
+         transition-[transform,box-shadow,background-color,border-color,color] duration-300
+         ease-[var(--ease-out-soft)]
+         disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@layer components {
+  /*
+   * Dugmad.
+   *
+   * Sva dijele isti pokret: pri prelasku mišem se odignu za jedan piksel i
+   * dobiju dublju sjenu, a pri pritisku slegnu. Jedan piksel je namjerno malo —
+   * dugme koje pri prelasku skoči izgleda kao igračka. `active:` je pritom
+   * bitniji od `hover:`: on je jedino što na dodirnom ekranu uopće postoji.
+   */
+  .plus-btn-primary {
+    @apply plus-btn bg-pine-800 text-paper-50 shadow-float
+           hover:-translate-y-px hover:bg-pine-700 hover:shadow-raise
+           active:translate-y-0 active:scale-[0.98]
+           disabled:hover:translate-y-0 disabled:hover:bg-pine-800 disabled:hover:shadow-float;
+  }
+
+  .plus-btn-accent {
+    @apply plus-btn bg-clay-500 text-white shadow-float
+           hover:-translate-y-px hover:bg-clay-600 hover:shadow-raise
+           active:translate-y-0 active:scale-[0.98]
+           disabled:hover:translate-y-0 disabled:hover:bg-clay-500 disabled:hover:shadow-float;
+  }
+
+  .plus-btn-ghost {
+    @apply plus-btn border border-pine-800/20 bg-transparent text-pine-800
+           hover:border-pine-800/45 hover:bg-pine-800/5 active:scale-[0.98];
+  }
+
+  /** Isto dugme, ali na tamnoj plohi ili preko fotografije. */
+  .plus-btn-onlight {
+    @apply plus-btn border border-paper-50/30 bg-paper-50/10 text-paper-50 backdrop-blur-sm
+           hover:border-paper-50/70 hover:bg-paper-50/20 active:scale-[0.98];
+  }
+
+  /*
+   * Kartica koja se odiže pri prelasku mišem.
+   *
+   * Mijenja se `transform`, `box-shadow` i BOJA okvira — nikad njegova
+   * debljina. Promjena debljine mijenja i unutrašnju visinu, pa se sadržaj
+   * kartice pri svakom prelasku pomjeri za piksel.
+   */
+  .plus-card-lift {
+    @apply plus-card transition-[transform,box-shadow,border-color] duration-500
+           ease-[var(--ease-out-soft)]
+           hover:-translate-y-1 hover:border-paper-300 hover:shadow-raise;
+  }
+
+  /** Sitna oznaka: brojka, status, "od 180 KM". */
+  .plus-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-paper-200 bg-white/80
+           px-3.5 py-1.5 text-xs font-medium text-pine-800 backdrop-blur-sm;
+  }
+
+  .plus-chip-onlight {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10
+           px-3.5 py-1.5 text-xs font-medium text-paper-100 backdrop-blur-md;
+  }
+
+  .plus-section {
+    @apply mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 md:py-28 lg:py-32;
+  }
+
+  /*
+   * Nadnaslov s vlas-linijom ispred sebe.
+   *
+   * Linija je `::before`, a ne poseban element, jer je ukras — čitač ekrana
+   * nema šta da je čita, a svaki odjeljak bi je inače morao ponovo napisati.
+   */
+  .plus-eyebrow {
+    @apply mb-5 flex items-center gap-3 text-xs font-semibold uppercase
+           tracking-[0.22em] text-pine-600;
+  }
+
+  .plus-eyebrow::before {
+    @apply h-px w-8 shrink-0 bg-pine-600/40 content-[''];
+  }
+
+  /* Isti nadnaslov na tamnoj plohi. */
+  .plus-eyebrow-onlight {
+    @apply mb-5 flex items-center gap-3 text-xs font-semibold uppercase
+           tracking-[0.22em] text-sage-400;
+  }
+
+  .plus-eyebrow-onlight::before {
+    @apply h-px w-8 shrink-0 bg-sage-400/40 content-[''];
+  }
+
+  .plus-title {
+    @apply text-[2.4rem] leading-[1.06] sm:text-5xl md:text-[3.4rem] lg:text-[3.9rem];
+  }
+
+  .plus-lead {
+    @apply mt-5 max-w-2xl text-lg leading-relaxed text-pine-900/65 md:text-xl;
+  }
+
+  .plus-label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-pine-900/60;
+  }
+
+  .plus-field {
+    @apply w-full rounded-xl border border-paper-300 bg-white px-4 py-3 text-pine-900
+           transition-[border-color,box-shadow] duration-200
+           placeholder:text-pine-900/35
+           focus:border-pine-600 focus:outline-none focus:ring-4 focus:ring-pine-600/12
+           disabled:bg-paper-100 disabled:text-pine-900/40;
+  }
+}
+
+/* ── "Plus" izgled: fotografija preko cijele širine, tekst na njoj ───────
+ *
+ * Cijeli pokret ovdje visi o JEDNOM broju: `--q`, koji `ScrollRange` upisuje
+ * i koji kaže koliko je fotografija prošla kroz ekran (0 = tek ušla odozdo,
+ * 0.5 = na sredini, 1 = izašla iznad). Sve ostalo je `calc()`.
+ *
+ * Tri sloja se kreću RAZLIČITOM brzinom, i to je ono što daje dubinu:
+ * fotografija najbrže, tekst sporije i u suprotnom smjeru, krupna brojka iza
+ * teksta najsporije od svega. Da se svi kreću jednako, ne bi se micalo ništa
+ * — pokret se vidi samo u odnosu na susjeda.
+ *
+ * Ništa se ne animira `transition`-om: vrijednosti dolaze iz skrola, kadar po
+ * kadar. Prijelaz bi ovdje samo dodao kašnjenje za sobom.
+ */
+
+.plus-shot {
+  /*
+   * Početna vrijednost stoji OVDJE, ne samo u JavaScriptu. Bez skripte — i uz
+   * "smanji animacije", kad se petlja uopće ne pokreće — sve ostaje u stanju
+   * "na sredini ekrana", dakle mirno i poravnato, a ne u nekom poluulaznom
+   * položaju.
+   */
+  --q: 0.5;
+
+  /* 0 u sredini prolaza, 1 na oba kraja. */
+  --edge: max(calc((var(--q) - 0.5) * 2), calc((0.5 - var(--q)) * 2));
+}
+
+/*
+ * Kamera se smiruje: fotografija uđe krupnija i kroz cijeli prolaz se lagano
+ * otvara, uz to klizeći sporije od stranice.
+ *
+ * Uvećanje nikad ne pada ispod 1.1 — pomjeranje unutar okvira mora imati
+ * odakle, inače se pri vrhu ili dnu ukaže prazan rub ispod slike.
+ */
+.plus-shot-img {
+  transform: translate3d(0, calc((var(--q) - 0.5) * -8%), 0) scale(calc(1.26 - var(--q) * 0.14));
+}
+
+/* Tekst ide sporije i u suprotnom smjeru od fotografije — po toj razlici oko
+   razdvaja natpis od slike i bez ijedne linije između njih. */
+.plus-shot-copy {
+  transform: translate3d(0, calc((0.5 - var(--q)) * 44px), 0);
+}
+
+/* Najdublji sloj, pa putuje najdalje. */
+.plus-shot-num {
+  transform: translate3d(0, calc((0.5 - var(--q)) * 104px), 0);
+}
+
+/* Zatamnjenje je najjače kad je fotografija na sredini ekrana — tamo se tekst
+   i čita. Na krajevima prolaza popusti i slika se vidi čistija. */
+.plus-shot-scrim {
+  opacity: calc(1 - var(--edge) * 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plus-shot-copy,
+  .plus-shot-num {
+    transform: none;
+  }
+
+  /* Uvećanje ostaje tek toliko da `object-cover` nema šta da otkrije na
+     ivicama; pokreta nema. */
+  .plus-shot-img {
+    transform: scale(1.02);
+  }
+}
+
+/* ── "Plus" izgled: kalendar ─────────────────────────────────────────────
+   react-day-picker se boji varijablama, pa se cijeli kalendar prelije na
+   novu paletu bez ijedne prepisane komponente. */
+
+.plus .rdp-root {
+  --rdp-accent-color: var(--color-pine-700);
+  --rdp-accent-background-color: var(--color-sage-100);
+  --rdp-font-family: var(--font-plus-sans);
+  color: var(--color-pine-900);
+}
+
+/*
+ * Kalendar na najužim telefonima (320px i manje).
+ *
+ * `react-day-picker` zadano crta dan od 2.75rem — sedam takvih je 308px, a na
+ * ekranu od 320px unutar kartice ostane oko 248px. Rezultat je vodoravni
+ * skrol cijele stranice, ne samo kalendara.
+ *
+ * Rješenje je u varijablama koje sam react-day-picker nudi, pa se nijedna
+ * njegova komponenta ne prepisuje — a mijenja se SAMO u `.plus` izgledu i
+ * SAMO ispod 360px, gdje je i problem.
+ */
+@media (max-width: 359px) {
+  .plus .rdp-root {
+    --rdp-day-height: 2.15rem;
+    --rdp-day-width: 2.15rem;
+    --rdp-day_button-height: 2rem;
+    --rdp-day_button-width: 2rem;
+    font-size: 0.85rem;
+  }
+}
+
+.plus .rdp-month_caption {
+  font-family: var(--font-plus-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--color-pine-900);
+}
+
+.plus .rdp-weekday {
+  color: color-mix(in srgb, var(--color-pine-900) 45%, transparent);
+}
+
+.plus .rdp-day_button:hover:not([disabled]) {
+  background-color: var(--color-sage-100);
+}
+
+.plus .rdp-day.day-taken .rdp-day_button {
+  color: color-mix(in srgb, var(--color-pine-900) 35%, transparent);
+  background-color: var(--color-paper-100);
+}
+
+.plus .rdp-day.day-taken-pending .rdp-day_button {
+  color: var(--color-clay-600);
+  background-color: color-mix(in srgb, var(--color-clay-500) 12%, transparent);
+}
+
+.plus .rdp-range_start .rdp-day_button,
+.plus .rdp-range_end .rdp-day_button {
+  background-color: var(--color-pine-700) !important;
+  color: var(--color-paper-50) !important;
+}
+
+.plus .rdp-range_middle .rdp-day_button {
+  background-color: var(--color-sage-100) !important;
+  color: var(--color-pine-900) !important;
+}
+
+.plus .rdp-today:not(.rdp-selected) .rdp-day_button {
+  color: var(--color-clay-500);
+}
+
+/* Legenda ispod kalendara — tri boje koje na novoj paleti moraju biti druge. */
+.plus .stay-legend {
+  color: color-mix(in srgb, var(--color-pine-900) 55%, transparent);
+}
+
+.plus .stay-legend [data-tone='free'] {
+  background-color: #fff;
+  border-color: var(--color-paper-300);
+}
+
+.plus .stay-legend [data-tone='taken'] {
+  background-color: var(--color-paper-200);
+}
+
+.plus .stay-legend [data-tone='selected'] {
+  background-color: var(--color-pine-700);
+}
+
+.plus :focus-visible {
+  outline-color: var(--color-pine-600);
+}
+
+/* ── Arapski ─────────────────────────────────────────────────────────────
+   Tri stvari koje se ne mogu riješiti u komponentama:
+
+   1. Pismo. Ni Inter ni Fraunces nemaju arapske glifove, pa i naslovi idu
+      na Noto Sans Arabic — ružniji je od Fraunces-a, ali barem postoji.
+   2. Razmicanje slova. Arapsko pismo je spojeno; `tracking-[0.2em]` bi
+      razbio riječ na pojedinačna slova i učinio je nečitljivom.
+   3. Velika slova. Arapski ih nema, pa je `uppercase` ili bez učinka ili
+      štetan (na latiničnim umecima usred arapskog teksta).
+
+   Pravila stoje IZVAN `@layer`, pa nadjačavaju Tailwindove utility klase
+   bez ijednog `!important` — neslojeviti CSS uvijek pobjeđuje slojeviti.
+   ─────────────────────────────────────────────────────────────────────── */
+
+html[lang='ar'] body,
+html[lang='ar'] h1,
+html[lang='ar'] h2,
+html[lang='ar'] h3 {
+  font-family: var(--font-arabic-stack);
+}
+
+html[lang='ar'] body,
+html[lang='ar'] body * {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ── Komponente koje se ponavljaju ───────────────────────────────────────── */
+
+/*
+ * `btn` je @utility, a ne obična klasa u @layer components — u Tailwindu v4
+ * `@apply` prihvata samo prave utility klase, pa bi ga `.btn-primary` inače
+ * odbio s greškom "unknown utility class".
+ */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3
+         text-sm font-semibold tracking-wide transition-all duration-200
+         disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@layer components {
+  .btn-primary {
+    @apply btn bg-forest-700 text-sand-50 shadow-soft
+           hover:bg-forest-800 hover:shadow-lift active:scale-[0.98]
+           disabled:hover:bg-forest-700 disabled:hover:shadow-soft;
+  }
+
+  .btn-accent {
+    @apply btn bg-ember-500 text-white shadow-soft
+           hover:bg-ember-600 hover:shadow-lift active:scale-[0.98]
+           disabled:hover:bg-ember-500;
+  }
+
+  .btn-ghost {
+    @apply btn border border-forest-700/25 bg-transparent text-forest-800
+           hover:border-forest-700/50 hover:bg-forest-700/5 active:scale-[0.98];
+  }
+
+  .card {
+    @apply rounded-2xl border border-sand-200 bg-white shadow-soft;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink-700;
+  }
+
+  .field-input {
+    @apply w-full rounded-xl border border-sand-300 bg-white px-4 py-2.5 text-ink-900
+           transition-colors placeholder:text-ink-400
+           focus:border-forest-600 focus:outline-none
+           focus:ring-2 focus:ring-forest-600/20
+           disabled:bg-sand-100 disabled:text-ink-400;
+  }
+
+  .section {
+    @apply mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 md:py-28;
+  }
+
+  .section-eyebrow {
+    @apply mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-forest-600;
+  }
+
+  .section-title {
+    @apply text-3xl leading-tight md:text-4xl lg:text-[2.75rem];
+  }
+
+  .section-lead {
+    @apply mt-4 max-w-2xl text-lg leading-relaxed text-ink-500;
+  }
+
+}
+
+
+/* ── Kalendar (react-day-picker) ─────────────────────────────────────────── */
+
+.rdp-root {
+  --rdp-accent-color: var(--color-forest-700);
+  --rdp-accent-background-color: var(--color-moss-100);
+  --rdp-day-height: 2.75rem;
+  --rdp-day-width: 2.75rem;
+  --rdp-day_button-height: 2.5rem;
+  --rdp-day_button-width: 2.5rem;
+  --rdp-day_button-border-radius: 9999px;
+  --rdp-outside-opacity: 0.35;
+  --rdp-font-family: var(--font-sans);
+  --rdp-nav_button-height: 2.25rem;
+  --rdp-nav_button-width: 2.25rem;
+  margin: 0;
+}
+
+.rdp-month_caption {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--color-forest-900);
+  text-transform: capitalize;
+}
+
+.rdp-weekday {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
+}
+
+.rdp-day_button:hover:not([disabled]) {
+  background-color: var(--color-moss-100);
+}
+
+/* Zauzeti datumi — prekriženi i vizuelno "mrtvi". */
+.rdp-day.day-taken .rdp-day_button {
+  color: var(--color-ink-400);
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  cursor: not-allowed;
+  background-color: var(--color-sand-100);
+}
+
+.rdp-day.day-taken-pending .rdp-day_button {
+  color: var(--color-warn-600);
+  text-decoration: line-through;
+  background-color: color-mix(in srgb, var(--color-warn-600) 10%, transparent);
+}
+
+.rdp-day[disabled] .rdp-day_button {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Odabrani raspon */
+.rdp-range_start .rdp-day_button,
+.rdp-range_end .rdp-day_button {
+  background-color: var(--color-forest-700) !important;
+  color: var(--color-sand-50) !important;
+  font-weight: 600;
+}
+
+.rdp-range_middle .rdp-day_button {
+  background-color: var(--color-moss-100) !important;
+  color: var(--color-forest-900) !important;
+  border-radius: 0 !important;
+}
+
+.rdp-today:not(.rdp-selected) .rdp-day_button {
+  font-weight: 700;
+  color: var(--color-ember-600);
+}
+
+/*
+ * Odabrani raspon zdesna nalijevo.
+ *
+ * react-day-picker sam okreće raspored kad dobije `dir="rtl"`, ali ne i
+ * zaobljenja koja mi crtamo iznad njega: bez ovoga bi početak raspona bio
+ * zaobljen s pogrešne strane, pa bi traka izgledala kao da počinje na kraju.
+ */
+[dir='rtl'] .rdp-range_start .rdp-day_button {
+  border-start-start-radius: 9999px;
+  border-end-start-radius: 9999px;
+}
+
+[dir='rtl'] .rdp-range_end .rdp-day_button {
+  border-start-end-radius: 9999px;
+  border-end-end-radius: 9999px;
+}
+
+/* ── Animacije ───────────────────────────────────────────────────────────── */
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-rise {
+  animation: fade-rise 0.7s var(--ease-out-soft) both;
+}
+
+/* ── Animacije "plus" izgleda ────────────────────────────────────────────
+   Stoje ovdje, uz ostale, a ne u zasebnoj datoteci: sve su čist `opacity` i
+   `transform`, i sve ih jednako gasi `prefers-reduced-motion` blok na dnu.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Riječ koja izlazi ispod zavjese (vidi `motion/TextReveal.tsx`).
+ *
+ * Pomak je u `em`, a ne u pikselima: naslov je na telefonu upola manji nego na
+ * ekranu, pa bi fiksnih 40px tamo bacilo riječ daleko ispod reza, a ovdje
+ * jedva ispod ivice. U `em` je pomak uvijek tačno "jedna visina slova".
+ */
+@keyframes word-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.05em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-word-rise {
+  animation: word-rise 0.9s var(--ease-out-expo) both;
+}
+
+/* Naslovna fotografija se nakon učitavanja jednom, polako, vrati iz uvećanja —
+   slika "diše" umjesto da samo stoji. Traje dugo, pa se osjeti a ne primijeti. */
+@keyframes slow-zoom {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.animate-slow-zoom {
+  animation: slow-zoom 2.4s var(--ease-out-expo) both;
+}
+
+/* Mobilni meni: stavke ulaze jedna za drugom, s početka reda. */
+@keyframes menu-item {
+  from {
+    opacity: 0;
+    transform: translateX(var(--reveal-slide, -24px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-menu-item {
+  animation: menu-item 0.45s var(--ease-out-expo) both;
+}
+
+/* Uvećana slika i dijalozi. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-dialog-in {
+  animation: dialog-in 0.4s var(--ease-out-expo) both;
+}
+
+/*
+ * Tačka koja pulsira uz prvi slobodan termin.
+ *
+ * Jedna od dvije animacije na sajtu koje se vrte u krug, i to s razlogom: ona
+ * je znak da je podatak pored nje živ, a ne slika. Sve ostalo se pokrene,
+ * završi i stane.
+ */
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s var(--ease-out-soft) infinite;
+}
+
+/*
+ * Nagovještaj za skrol na naslovnom ekranu: svijetla crtica klizne niz tanku
+ * liniju i nestane. Zamjena za strelicu koja poskakuje — isti nagovještaj,
+ * upola manje pokreta na ekranu.
+ */
+@keyframes scroll-hint {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  40%,
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(250%);
+    opacity: 0;
+  }
+}
+
+.animate-scroll-hint {
+  animation: scroll-hint 2.2s var(--ease-out-soft) infinite;
+}
+
+/* ── Naslovna scena kroz koju se ulazi (vidi `motion/Scene.tsx`) ─────────
+   JavaScript postavlja samo `--p` — koliko je scene prošlo, od 0 do 1. Sve
+   ostalo je ovdje: koji sloj koliko naraste, kad se koji tekst pojavi, kad se
+   ekran ispere u svijetlo.
+
+   Sve je `transform` i `opacity`, jedine dvije osobine koje preglednik može
+   odraditi na grafičkoj kartici. Nijedan sloj ne dira visinu ni razmak, pa se
+   raspored stranice pri skrolanju ne računa iznova ni jednom.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.plus-scene {
+  position: relative;
+  /* Bez JavaScripta i uz "smanji animacije" ostaje običan naslovni ekran. */
+  height: 100svh;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /*
+   * Staza: jedan ekran scene po jednom ekranu skrola.
+   *
+   * Bilo je dva i po. Zadnjih pola ekrana te staze nije pokazivalo NIŠTA —
+   * prednji plan je već bio narastao preko cijelog kadra, a ispiranje ga je
+   * dovršilo, pa je posjetilac skrolao kroz ravnu crnu plohu. Ovo je skraćeno
+   * točno za taj mrtvi dio.
+   */
+  .plus-scene[data-scene='on'] {
+    height: 200svh;
+  }
+}
+
+.plus-scene-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* Nebo iza svega — jedva se kreće, kao pravi horizont. */
+.scene-sky {
+  transform: scale(calc(1 + var(--p, 0) * 0.12));
+}
+
+/* Fotografija kuće: kamera ulazi u nju. */
+.scene-photo {
+  transform: scale(calc(1 + var(--p, 0) * 0.95));
+}
+
+/*
+ * Prednji slojevi. Oni se kreću NAJVIŠE i to je cijeli efekt: kad prednje
+ * raste brže od zadnjeg, oko to čita kao kretanje naprijed, a ne kao
+ * uvećavanje slike.
+ *
+ * `transform-origin` je na ivici uz koju sloj stoji, pa krošnja raste prema
+ * gore i van ekrana, a četinari prema dolje.
+ */
+.scene-trees-bottom {
+  transform-origin: 50% 100%;
+  /*
+   * Pomak nadolje je NAMJERNO veći od rasta.
+   *
+   * Prvi pokušaj je stabla samo uvećavao i ona su rasla u kadar — izgledalo je
+   * kao da šuma raste, a ne kao da se kroz nju prolazi. Kad prednji plan
+   * istovremeno raste i IZLAZI iz kadra, oko to čita kao da ga je kamera
+   * prošla. To je cijela razlika između "zumiranja" i "kretanja".
+   */
+  transform: translate3d(0, calc(var(--p, 0) * 74vh), 0) scale(calc(1 + var(--p, 0) * 2.4));
+}
+
+.scene-canopy-top {
+  transform-origin: 50% 0%;
+  transform: translate3d(0, calc(var(--p, 0) * -58vh), 0) scale(calc(1 + var(--p, 0) * 2.2));
+}
+
+/*
+ * Naslov i dugmad.
+ *
+ * Nestaju rano (`* 2.6` znači da su na nuli oko 40% scene) — dok se
+ * kamera kreće, tekst preko nje se ne može čitati, pa nema razloga da smeta.
+ * `visibility` se gasi na kraju da nevidljiva dugmad ne hvataju klikove.
+ */
+.scene-copy {
+  opacity: calc(1 - var(--p, 0) * 2.6);
+  transform: translate3d(0, calc(var(--p, 0) * -10vh), 0);
+}
+
+/*
+ * Kad je tekst već nestao, ne smije hvatati klikove.
+ *
+ * `opacity: 0` element i dalje prima klikove i tabulator — dugme "Provjeri
+ * dostupnost" bi ostalo nevidljivo, a i dalje bi se moglo pritisnuti usred
+ * scene. Zastavicu `data-past` postavlja `Scene.tsx` kad `--p` pređe 0.3, i
+ * to je jedini put kad se u toj scenu ičim dira DOM osim same brojke.
+ */
+.plus-scene[data-past='true'] .scene-copy {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * Ime kuće razmaknutim slovima, usred scene.
+ *
+ * Pojavi se tek kad naslov ode (`--p` oko 0.26) i raste zajedno s kamerom, pa
+ * djeluje kao da stoji U prostoru, a ne na staklu preko njega.
+ */
+.scene-ghost {
+  opacity: calc((var(--p, 0) - 0.26) * 3.6);
+  letter-spacing: calc(0.18em + var(--p, 0) * 0.42em);
+  transform: scale(calc(0.92 + var(--p, 0) * 0.3));
+}
+
+/*
+ * Ispiranje u boju papira na kraju.
+ *
+ * Nije ukras nego spoj: sljedeći odjeljak ("O kući") je na istoj toj boji, pa
+ * scena ne prestaje nego prelazi u njega.
+ */
+.scene-wash {
+  opacity: calc((var(--p, 0) - 0.86) * 7.2);
+}
+
+/* ── Otkrivanje naslova red po red ───────────────────────────────────────
+   Pripada `motion/LineReveal.tsx`. Redni broj reda upisuje JavaScript, jer
+   samo preglednik zna gdje se tekst prelomio; sve ostalo — maska, pomak,
+   kašnjenje — je čist CSS.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.line-reveal-mask {
+  display: inline-flex;
+  overflow: hidden;
+  /* Bez ovoga maska odsiječe repove slova koja se spuštaju ispod osnovne
+     linije (j, g, p, ć) — a u bosanskom i arapskom ih ima u svakom naslovu. */
+  padding-bottom: 0.14em;
+  vertical-align: bottom;
+}
+
+.line-reveal-word {
+  display: inline-block;
+  opacity: 0;
+  /* Pomak je u `em`, a ne u pikselima: naslov je na telefonu upola manji, pa
+     bi fiksnih 40px tamo bacilo riječ daleko ispod reza. U `em` je pomak
+     uvijek tačno "jedna visina slova". */
+  transform: translateY(1.05em);
+  transition:
+    opacity 0.85s var(--ease-out-expo),
+    transform 0.85s var(--ease-out-expo);
+  /*
+   * Kašnjenje po REDU, ne po riječi.
+   *
+   * `--line` upisuje JavaScript nakon mjerenja; dok ga nema, `var(..., 0)`
+   * znači da cijeli naslov krene odjednom — ružnije, ali nikad zaglavljeno.
+   */
+  transition-delay: calc(var(--line-delay, 0ms) + var(--line, 0) * var(--line-step, 90ms));
+}
+
+.line-reveal[data-shown='true'] .line-reveal-word {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── "Plus" izgled: pokret u rezervaciji ─────────────────────────────────
+ *
+ * Ovdje pokret nije ukras nego POTVRDA. Gost je nešto uradio — dodirnuo
+ * datum, promijenio broj noći, pritisnuo dugme — i svaka od ovih animacija
+ * odgovara na tačno jedan takav potez. Zato ih nema nigdje drugo u formi:
+ * polje koje se miče dok se u njega kuca samo smeta.
+ *
+ * Sve ih gasi `prefers-reduced-motion` blok na dnu ovog fajla.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Odabrani raspon se PRELIJE preko kalendara, s lijeva na desno.
+ *
+ * Kašnjenje ide po koloni (danu u sedmici), ne po rednom broju ćelije.
+ * Da ide po rednom broju, raspon u posljednjoj sedmici mjeseca bi čekao pola
+ * sekunde prije nego što uopće krene — a gost je dotle već otišao dalje.
+ * Ovako svaka sedmica krene odmah, a unutar nje se dani pale redom.
+ */
+.plus .rdp-day:nth-child(1) {
+  --d: 0;
+}
+.plus .rdp-day:nth-child(2) {
+  --d: 1;
+}
+.plus .rdp-day:nth-child(3) {
+  --d: 2;
+}
+.plus .rdp-day:nth-child(4) {
+  --d: 3;
+}
+.plus .rdp-day:nth-child(5) {
+  --d: 4;
+}
+.plus .rdp-day:nth-child(6) {
+  --d: 5;
+}
+.plus .rdp-day:nth-child(7) {
+  --d: 6;
+}
+
+@keyframes range-fill {
+  from {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plus .rdp-selected .rdp-day_button {
+  /* `backwards` drži dan skupljenim dok čeka svoj red — bez toga bi svi
+     stajali gotovi pa naglo poskočili. */
+  animation: range-fill 420ms var(--ease-out-soft) backwards;
+  animation-delay: calc(var(--d, 0) * 26ms);
+}
+
+/* Pregled cijene se pojavi tek kad postoji ispravan termin, pa ulazi kao
+   nova obavijest, a ne kao dio koji je oduvijek tu. */
+@keyframes summary-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plus-summary-in {
+  animation: summary-in 520ms var(--ease-out-soft) both;
+}
+
+/* Datum u pregledu se ne prebaci naglo — stara vrijednost ode, nova dođe
+   odozdo. Pokret je namjerno sitan: ovo je potvrda, ne najava. */
+@keyframes value-swap {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plus-value-swap {
+  display: inline-block;
+  animation: value-swap 380ms var(--ease-out-soft) both;
+}
+
+/*
+ * Odsjaj koji prelazi preko dugmeta dok se rezervacija šalje.
+ *
+ * Kotur pored teksta kaže da se nešto dešava, ali stoji na jednom mjestu;
+ * odsjaj preko cijele širine pokazuje da traje. Na sporoj vezi je to razlika
+ * između čekanja i drugog klika na isto dugme.
+ */
+@keyframes btn-sweep {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(240%);
+  }
+}
+
+.plus-btn-busy::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+  animation: btn-sweep 1.15s linear infinite;
+  content: '';
+}
+
+/* ── "Plus" izgled: rezervacija u tri koraka ─────────────────────────────
+ *
+ * Sva tri koraka su STALNO u DOM-u; mijenja se samo koji je otvoren. Da se
+ * neaktivni odspoje, forma bi pri svakom "Nazad" izgubila ono što je gost
+ * upisao, a i sam pokret bi imao odakle da krene tek nakon što se sadržaj
+ * pojavi — pa bi prvi kadar uvijek bio prazan.
+ *
+ * Neaktivni koraci nose `inert`, pa u njih ne može ni tabulator ni čitač
+ * ekrana. Skriveno polje koje i dalje hvata fokus je gore nego nikakvo.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Visina se animira preko `grid-template-rows: 0fr → 1fr`.
+ *
+ * To je jedini način da se visina animira a da se unaprijed NE zna kolika je.
+ * Korak s greškom je viši od istog koraka bez nje, a korak s podacima je
+ * različite visine na telefonu i na stolnom računaru; svako mjerenje u
+ * JavaScriptu bi ovdje bilo pogađanje koje jednom promaši.
+ */
+.plus-step {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 480ms var(--ease-out-soft);
+}
+
+.plus-step[data-active='true'] {
+  grid-template-rows: 1fr;
+}
+
+.plus-step-inner {
+  overflow: hidden;
+  opacity: 0;
+  /* Predznak dolazi iz smjera kretanja: naprijed ulazi s one strane na koju
+     se ide, nazad s one s koje se vraća. U arapskom su strane obrnute. */
+  transform: translate3d(var(--step-in), 0, 0);
+  transition:
+    opacity 340ms var(--ease-out-soft),
+    transform 460ms var(--ease-out-soft);
+  /* Prostor za prstenove fokusa, koje bi `overflow: hidden` inače odrezao uz
+     samu ivicu koraka. */
+  padding: 6px;
+  margin: -6px;
+}
+
+.plus-step[data-active='true'] .plus-step-inner {
+  opacity: 1;
+  transform: none;
+  /* Sadržaj kreće tek kad se visina počela otvarati — inače ulazi u okvir
+     koji ga još nema gdje primiti. */
+  transition-delay: 90ms;
+}
+
+/* Traka napretka: linija koja se puni ispod tri tačke. */
+.plus-rail-fill {
+  transition: width 520ms var(--ease-out-soft);
+}
+
+.plus-rail-dot {
+  transition:
+    background-color 380ms var(--ease-out-soft),
+    border-color 380ms var(--ease-out-soft),
+    color 380ms var(--ease-out-soft),
+    transform 380ms var(--ease-out-soft);
+}
+
+.plus-rail-step[data-state='active'] .plus-rail-dot {
+  transform: scale(0.86);
+}
+
+/* Prsten oko aktivne tačke prati kucanje: raste sa svakim poljem koje
+   postane ispravno, a ne s klikom na "Dalje". */
+.plus-rail-ring {
+  transition: stroke-dashoffset 460ms var(--ease-out-soft);
+}
+
+/* Kvačica na odabranom načinu plaćanja — isti potez kao u poljima. */
+.plus-pick-tick {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0.9rem;
+  height: 1.1rem;
+  width: 1.1rem;
+  color: var(--color-pine-600);
+  opacity: 0;
+  transform: translateY(-50%) scale(0.5);
+  transition:
+    opacity 240ms var(--ease-out-soft),
+    transform 380ms var(--ease-out-soft);
+}
+
+.plus-pick-tick path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 460ms var(--ease-out-soft) 60ms;
+}
+
+.plus-pick[data-on='true'] .plus-pick-tick {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.plus-pick[data-on='true'] .plus-pick-tick path {
+  stroke-dashoffset: 0;
+}
+
+/* ── "Plus" izgled: forma koja reaguje ───────────────────────────────────
+ *
+ * Sve odavde odgovara na jedan jedini potez gosta — dodir dugmeta ili slovo
+ * u polju. Ništa se ne pokreće samo od sebe, ništa ne ide u krug. Zato je
+ * ovaj pokret jednako dobrodošao i onome koga animacije inače smetaju: on
+ * ne oduzima pažnju nego je vraća, i to na mjesto na kojem se upravo nešto
+ * desilo.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/* ── Val iz tačke dodira ── */
+.plus-ripple {
+  position: absolute;
+  top: var(--ry, 50%);
+  left: var(--rx, 50%);
+  z-index: -1;
+  height: 10px;
+  width: 10px;
+  margin: -5px;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.plus-ripple[data-on='true'] {
+  animation: ripple-out 640ms var(--ease-out-soft);
+}
+
+@keyframes ripple-out {
+  from {
+    opacity: 0.32;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(42);
+  }
+}
+
+/* Dugme slegne pod prstom. Jedan piksel gore-dolje ne bi se ni osjetio na
+   dodirnom ekranu, gdje prst ionako prekriva pola dugmeta. */
+.plus-press {
+  transition: transform 160ms var(--ease-out-soft);
+}
+
+.plus-press:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Okruglo dugme u brojaču gostiju. */
+.plus-step-btn {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--color-paper-300);
+  color: var(--color-pine-800);
+  transition:
+    background-color 240ms var(--ease-out-soft),
+    border-color 240ms var(--ease-out-soft),
+    transform 160ms var(--ease-out-soft);
+}
+
+.plus-step-btn:hover:not(:disabled) {
+  border-color: var(--color-pine-600);
+  background-color: var(--color-sage-100);
+}
+
+.plus-step-btn:disabled {
+  opacity: 0.35;
+}
+
+/* ── Polje koje odgovara na svako slovo ── */
+.plus-live-box {
+  position: relative;
+}
+
+.plus-live-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-paper-300);
+  background-color: #fff;
+  padding: 1.4rem 2.6rem 0.55rem 1rem;
+  color: var(--color-pine-900);
+  transition:
+    border-color 260ms var(--ease-out-soft),
+    box-shadow 260ms var(--ease-out-soft);
+}
+
+[dir='rtl'] .plus-live-input {
+  padding-left: 2.6rem;
+  padding-right: 1rem;
+}
+
+.plus-live-input:focus {
+  border-color: var(--color-pine-600);
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-pine-600) 12%, transparent);
+}
+
+.plus-live-input:disabled {
+  background-color: var(--color-paper-100);
+  color: color-mix(in oklab, var(--color-pine-900) 40%, transparent);
+}
+
+.plus-live-input::placeholder {
+  color: color-mix(in oklab, var(--color-pine-900) 35%, transparent);
+}
+
+/*
+ * Natpis stoji U polju dok je prazno, pa se podigne u njegov gornji rub.
+ *
+ * `translate` i `scale` umjesto promjene `font-size`: veličina slova se ne
+ * može animirati bez da preglednik iznova računa raspored u svakom kadru, a
+ * `transform` mu ne dira ništa osim slike.
+ */
+.plus-live-label {
+  position: absolute;
+  top: 0.95rem;
+  inset-inline-start: 1rem;
+  /* Natpis se skuplja prema svom početku, pa mora znati gdje mu je početak —
+     u arapskom je to desna strana. */
+  transform-origin: left center;
+  color: color-mix(in oklab, var(--color-pine-900) 50%, transparent);
+  pointer-events: none;
+  transition:
+    transform 300ms var(--ease-out-soft),
+    color 300ms var(--ease-out-soft);
+}
+
+[dir='rtl'] .plus-live-label {
+  transform-origin: right center;
+}
+
+.plus-live[data-lifted='true'] .plus-live-label {
+  transform: translateY(-0.72rem) scale(0.76);
+  color: color-mix(in oklab, var(--color-pine-900) 60%, transparent);
+}
+
+.plus-live:focus-within .plus-live-label {
+  color: var(--color-pine-700);
+}
+
+/* Linija se razvlači iz sredine na obje strane. */
+.plus-live-underline {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0.75rem;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: var(--color-pine-600);
+  transform: scaleX(0);
+  transition:
+    transform 420ms var(--ease-out-soft),
+    background-color 300ms var(--ease-out-soft);
+}
+
+.plus-live:focus-within .plus-live-underline,
+.plus-live[data-ok='true'] .plus-live-underline {
+  transform: scaleX(1);
+}
+
+.plus-live[data-ok='true'] .plus-live-underline {
+  background-color: var(--color-pine-500);
+}
+
+.plus-live[data-bad='true'] .plus-live-underline {
+  background-color: var(--color-danger-600);
+  transform: scaleX(1);
+}
+
+.plus-live[data-bad='true'] .plus-live-input {
+  border-color: color-mix(in oklab, var(--color-danger-600) 50%, transparent);
+}
+
+/*
+ * Kvačica se NACRTA, ne pojavi.
+ *
+ * `stroke-dashoffset` pomjera prazninu duž poteza, pa linija izgleda kao da
+ * se vuče. Gotova kvačica koja bljesne je obavještenje; nacrtana je odgovor.
+ */
+.plus-live-tick {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0.85rem;
+  height: 1.15rem;
+  width: 1.15rem;
+  color: var(--color-pine-600);
+  opacity: 0;
+  transform: translateY(-50%) scale(0.6);
+  pointer-events: none;
+  transition:
+    opacity 240ms var(--ease-out-soft),
+    transform 380ms var(--ease-out-soft);
+}
+
+.plus-live-tick path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 460ms var(--ease-out-soft) 60ms;
+}
+
+.plus-live[data-ok='true'] .plus-live-tick {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.plus-live[data-ok='true'] .plus-live-tick path {
+  stroke-dashoffset: 0;
+}
+
+/* Polje s više redova: kvačica ide uz gornju ivicu, ne uz sredinu okvira. */
+.plus-live-box:has(textarea) .plus-live-tick {
+  top: 1.5rem;
+  transform: scale(0.6);
+}
+
+.plus-live[data-ok='true'] .plus-live-box:has(textarea) .plus-live-tick {
+  transform: scale(1);
+}
+
+.plus-live-count {
+  position: absolute;
+  bottom: 0.5rem;
+  inset-inline-end: 0.85rem;
+  font-family: var(--font-plus-sans);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--color-pine-900) 40%, transparent);
+}
+
+/* Polje se strese pri izlasku s neispravnim sadržajem. Kratko i sitno —
+   ovo je opomena, ne kazna. */
+@keyframes field-shake {
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+.plus-live[data-bad='true'] .plus-live-box {
+  animation: field-shake 420ms var(--ease-out-soft);
+}
+
+/* ── Broj gostiju: stari broj ode, novi dođe ── */
+@keyframes roll-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.7em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes roll-down {
+  from {
+    opacity: 0;
+    transform: translateY(-0.7em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plus-roll {
+  animation: roll-up 320ms var(--ease-out-soft) both;
+}
+
+[data-dir='down'] .plus-roll {
+  animation-name: roll-down;
+}
+
+.plus-guest-value {
+  overflow: hidden;
+}
+
+.plus-guest-dot {
+  color: color-mix(in oklab, var(--color-pine-900) 18%, transparent);
+  transform: scale(0.82);
+  transition:
+    color 320ms var(--ease-out-soft),
+    transform 320ms var(--ease-out-soft);
+}
+
+.plus-guest-dot[data-on='true'] {
+  color: var(--color-pine-600);
+  transform: none;
+}
+
+/* ── Boje odvojene od rasporeda ──────────────────────────────────────────
+ *
+ * Nijedna komponenta ove stranice ne piše boju u svom JSX-u. Umjesto
+ * `text-pine-900/60` i sličnog, tamo stoje imena POSLOVA — `plus-ink`,
+ * `plus-dim`, `plus-rule`, `plus-surface` — a šta ta imena znače odlučuje se
+ * ovdje, na jednom mjestu.
+ *
+ * Zbog toga se cijela stranica presvlači jednom riječju: `data-skin` na
+ * omotaču u `layout.tsx`. Isti raspored, isti pokret, druga koža.
+ *
+ * ── Zašto ne samo zamijeniti vrijednosti boja u @theme ────────────────────
+ * Zato što ista boja u ovoj paleti radi dva suprotna posla. `paper-50` je i
+ * svijetla ploha i svijetli tekst NA tamnoj plohi; `pine-900` je i tamno
+ * slovo i tamna ploha. Zamijeniš li vrijednost, jedan posao popraviš a drugi
+ * pokvariš. Imena poslova to razdvajaju: `plus-surface` i `plus-ink-on` mogu
+ * ići u različitim smjerovima.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.plus {
+  /* Plohe */
+  --ui-bg: var(--color-paper-50);
+  --ui-bg-alt: var(--color-paper-100);
+  --ui-panel: #fff;
+  --ui-deep: var(--color-pine-900);
+  --ui-deepest: var(--color-pine-950);
+
+  /* Linije */
+  --ui-line: var(--color-paper-200);
+  --ui-line-soft: var(--color-paper-300);
+  --ui-line-on: color-mix(in oklab, var(--color-paper-100) 10%, transparent);
+
+  /* Slova na svijetloj plohi */
+  --ui-ink: var(--color-pine-900);
+  --ui-dim: color-mix(in oklab, var(--color-pine-900) 68%, transparent);
+  --ui-dimmer: color-mix(in oklab, var(--color-pine-900) 48%, transparent);
+
+  /* Slova na tamnoj plohi */
+  --ui-ink-on: var(--color-paper-50);
+  --ui-dim-on: color-mix(in oklab, var(--color-paper-200) 78%, transparent);
+  --ui-dimmer-on: color-mix(in oklab, var(--color-paper-200) 64%, transparent);
+
+  /* Naglasci */
+  --ui-accent: var(--color-pine-600);
+  --ui-accent-strong: var(--color-pine-700);
+  --ui-accent-on: var(--color-sage-300);
+  --ui-accent-ink: var(--color-paper-50);
+  --ui-accent-soft: var(--color-sage-100);
+  --ui-badge: var(--color-pine-800);
+  --ui-total: var(--color-pine-800);
+  --ui-link: var(--color-clay-500);
+  --ui-link-hover: var(--color-clay-600);
+
+  --ui-radius: var(--radius-panel);
+  --ui-radius-sm: 0.75rem;
+}
+
+/* ── Imena poslova ── */
+.plus-surface {
+  background-color: var(--ui-bg);
+}
+.plus-surface-alt {
+  background-color: var(--ui-bg-alt);
+}
+.plus-surface-deep {
+  background-color: var(--ui-deep);
+}
+.plus-surface-deepest {
+  background-color: var(--ui-deepest);
+}
+.plus-rule-on {
+  border-color: var(--ui-line-on);
+}
+.plus-ink-on {
+  color: var(--ui-ink-on);
+}
+.plus-dim-on {
+  color: var(--ui-dim-on);
+}
+.plus-dimmer-on {
+  color: var(--ui-dimmer-on);
+}
+.plus-accent {
+  color: var(--ui-accent-strong);
+}
+.plus-accent-on {
+  color: var(--ui-accent-on);
+}
+.plus-badge {
+  background-color: var(--ui-badge);
+  color: var(--ui-accent-ink);
+}
+
+/* Navigacija: pilula koja se pojavi tek kad se odskrola s vrha. */
+.plus-nav-pill {
+  border-color: color-mix(in oklab, var(--ui-line) 80%, transparent);
+  background-color: color-mix(in oklab, var(--ui-bg) 92%, transparent);
+}
+.plus-dot {
+  background-color: var(--ui-link);
+}
+.plus-hover:hover {
+  background-color: color-mix(in oklab, var(--ui-line) 70%, transparent);
+}
+.plus-sheet {
+  background-color: color-mix(in oklab, var(--ui-bg) 95%, transparent);
+}
+.plus-divide > * + * {
+  border-color: var(--ui-line);
+}
+.plus-progress {
+  background-image: linear-gradient(to right, var(--ui-accent), var(--ui-accent-on));
+}
+
+/*
+ * Ovo leži PREKO fotografije, ne preko plohe stranice.
+ *
+ * Zato prati kožu samo utoliko što joj uzima naglasak; svjetlina ostaje ista
+ * u svakoj koži, jer je fotografija ispod uvijek jednako tamna.
+ */
+.plus-accent-line {
+  background-color: color-mix(in oklab, var(--ui-accent-on) 50%, transparent);
+}
+.plus-pulse {
+  background-color: var(--ui-accent-on);
+}
+.plus-photo-veil {
+  background-color: color-mix(in oklab, var(--ui-deepest) 45%, transparent);
+}
+/* Siluete krošanja na dnu prizora — moraju biti iste boje kao ploha koja
+   ispod njih počinje, inače se vidi gdje crtež prestaje. */
+.plus-silhouette {
+  color: var(--ui-deepest);
+}
+/* Ogroman natpis u podnožju, jedva vidljiv iza sadržaja. */
+.plus-ghost {
+  color: color-mix(in oklab, var(--ui-ink-on) 7%, transparent);
+}
+
+.plus .plus-rule {
+  border-color: var(--ui-line);
+}
+.plus .plus-ink {
+  color: var(--ui-ink);
+}
+.plus .plus-dim {
+  color: var(--ui-dim);
+}
+.plus .plus-dimmer {
+  color: var(--ui-dimmer);
+}
+.plus .plus-total {
+  color: var(--ui-total);
+}
+.plus dt {
+  color: var(--ui-dim);
+}
+.plus dd {
+  color: var(--ui-ink);
+}
+
+.plus .plus-card {
+  background-color: var(--ui-panel);
+  border-color: var(--ui-line);
+  border-radius: var(--ui-radius);
+}
+
+.plus .plus-bar {
+  background-color: color-mix(in oklab, var(--ui-panel) 95%, transparent);
+}
+
+.plus .plus-note {
+  border-radius: var(--ui-radius-sm);
+  background-color: var(--ui-accent-soft);
+  color: var(--color-pine-800);
+}
+
+.plus .plus-alert {
+  border: 1px solid color-mix(in oklab, var(--color-danger-600) 25%, transparent);
+  border-radius: var(--ui-radius-sm);
+  background-color: color-mix(in oklab, var(--color-danger-600) 5%, transparent);
+  color: var(--color-danger-600);
+}
+
+/* Traka napretka */
+.plus .plus-rail-track {
+  background-color: var(--ui-line-soft);
+}
+.plus .plus-rail-fill,
+.plus .plus-rail-ring {
+  color: var(--ui-accent);
+  background-color: var(--ui-accent);
+}
+.plus .plus-rail-ring {
+  background-color: transparent;
+}
+.plus .plus-rail-dot {
+  border-color: var(--ui-line-soft);
+  background-color: var(--color-paper-50);
+  color: var(--ui-dimmer);
+}
+.plus [data-state='active'] .plus-rail-dot {
+  border-color: transparent;
+  background-color: var(--ui-accent-soft);
+  color: var(--ui-total);
+}
+.plus [data-state='done'] .plus-rail-dot {
+  border-color: var(--ui-accent);
+  background-color: var(--ui-accent);
+  color: var(--ui-accent-ink);
+}
+.plus .plus-rail-name {
+  color: var(--ui-total);
+}
+.plus [data-state='todo'] .plus-rail-name {
+  color: var(--ui-dimmer);
+}
+
+/* Način plaćanja */
+.plus .plus-pick {
+  border: 1px solid var(--ui-line-soft);
+  border-radius: var(--ui-radius-sm);
+  transition:
+    background-color 300ms var(--ease-out-soft),
+    border-color 300ms var(--ease-out-soft),
+    box-shadow 300ms var(--ease-out-soft);
+}
+.plus .plus-pick:hover {
+  border-color: color-mix(in oklab, var(--ui-accent) 40%, transparent);
+}
+.plus .plus-pick[data-on='true'] {
+  border-color: var(--ui-accent);
+  background-color: color-mix(in oklab, var(--ui-accent-soft) 50%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ui-accent) 10%, transparent);
+}
+.plus .plus-pick-radio {
+  accent-color: var(--color-pine-700);
+}
+.plus .plus-pick-tick {
+  color: var(--ui-accent);
+}
+
+/* Polja i brojač gostiju */
+.plus .plus-live-input {
+  border-color: var(--ui-line-soft);
+  border-radius: var(--ui-radius-sm);
+  background-color: var(--ui-panel);
+  color: var(--ui-ink);
+}
+.plus .plus-live-input:focus {
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ui-accent) 12%, transparent);
+}
+.plus .plus-live-label {
+  color: var(--ui-dim);
+}
+
+/*
+ * I PODIGNUTI natpis, izričito.
+ *
+ * Bez ovog reda podignuti natpis zadržava boju iz `.plus-live[data-lifted]`
+ * bloka iznad — a taj selektor ima jedan član više, pa pobjeđuje. Na svijetloj
+ * podlozi se to ne primijeti; na tamnoj natpis nestane, jer je tamnozelen na
+ * skoro crnom. Ista zamka čeka svaku sljedeću kožu.
+ */
+.plus .plus-live[data-lifted='true'] .plus-live-label {
+  color: var(--ui-dim);
+}
+
+.plus .plus-live:focus-within .plus-live-label {
+  color: var(--ui-accent);
+}
+.plus .plus-live-underline,
+.plus .plus-live[data-ok='true'] .plus-live-underline {
+  background-color: var(--ui-accent);
+}
+.plus .plus-live-tick {
+  color: var(--ui-accent);
+}
+.plus .plus-live-count {
+  color: var(--ui-dimmer);
+}
+.plus .plus-label {
+  color: var(--ui-dim);
+}
+.plus .plus-step-btn {
+  border-color: var(--ui-line-soft);
+  color: var(--ui-total);
+}
+.plus .plus-step-btn:hover:not(:disabled) {
+  border-color: var(--ui-accent);
+  background-color: var(--ui-accent-soft);
+}
+.plus .plus-guest-box {
+  border: 1px solid var(--ui-line-soft);
+  border-radius: var(--ui-radius-sm);
+  background-color: var(--ui-panel);
+}
+.plus .plus-guest-dot[data-on='true'] {
+  color: var(--ui-accent);
+}
+
+.plus .plus-link {
+  color: var(--color-clay-500);
+}
+.plus .plus-link:hover {
+  color: var(--color-clay-600);
+}
+
+/* Probno plaćanje — mora bosti oči, jer nije pravi način plaćanja. */
+.plus .plus-warn {
+  color: var(--color-clay-600);
+}
+
+/* ── Tamna koža ──────────────────────────────────────────────────────────
+ *
+ * Isti raspored, isti pokret, ista pravila — samo druge boje i oštrije
+ * ivice. Skoro sve staje u zamjenu desetak vrijednosti gore; ispod njih
+ * ostaje samo ono što boja ne pokriva: uglovi, razmak među slovima i
+ * kalendar, koji svoje boje uzima iz vlastitih promjenljivih.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Tokeni tamne kože. Cijela stranica visi o ovih dvadesetak redova.
+ *
+ * Plohe koje su bile svijetle postaju crne, a one koje su BILE tamne ostaju
+ * tamne — samo se razmaknu za jedan ton, da se ivica između odjeljaka i dalje
+ * vidi. Slova idu obrnuto, a svaki naglasak postaje mesing.
+ */
+.plus[data-skin='onyx'] {
+  --ui-bg: var(--color-onyx-950);
+  --ui-bg-alt: var(--color-onyx-900);
+  --ui-panel: var(--color-onyx-900);
+  --ui-deep: var(--color-onyx-850);
+  --ui-deepest: var(--color-onyx-950);
+
+  --ui-line: color-mix(in oklab, var(--color-ivory-100) 12%, transparent);
+  --ui-line-soft: color-mix(in oklab, var(--color-ivory-100) 22%, transparent);
+  --ui-line-on: color-mix(in oklab, var(--color-ivory-100) 12%, transparent);
+
+  --ui-ink: var(--color-ivory-50);
+  --ui-dim: var(--color-ivory-400);
+  --ui-dimmer: var(--color-ivory-500);
+
+  --ui-ink-on: var(--color-ivory-50);
+  --ui-dim-on: var(--color-ivory-400);
+  --ui-dimmer-on: var(--color-ivory-500);
+
+  --ui-accent: var(--color-brass-400);
+  --ui-accent-strong: var(--color-brass-400);
+  --ui-accent-on: var(--color-brass-400);
+  --ui-accent-ink: var(--color-onyx-950);
+  --ui-accent-soft: var(--color-onyx-800);
+  --ui-badge: var(--color-brass-400);
+  --ui-total: var(--color-brass-300);
+  --ui-link: var(--color-brass-400);
+  --ui-link-hover: var(--color-brass-300);
+
+  /* Oštre ivice su pola ovog izgleda. Zaobljenja se ne smanjuju nego gase. */
+  --ui-radius: 0;
+  --ui-radius-sm: 0;
+}
+
+/* Ploha stranice ispod svih odjeljaka — inače bi se između njih vidjela
+   svijetla podloga glavnog sajta. */
+.plus[data-skin='onyx'] {
+  background-color: var(--ui-bg);
+  color: var(--ui-ink);
+}
+
+[data-skin='onyx'] .plus-card {
+  box-shadow: none;
+}
+
+/* Naslovi odjeljka */
+[data-skin='onyx'] .plus-eyebrow {
+  color: var(--color-brass-400);
+}
+[data-skin='onyx'] .plus-eyebrow::before {
+  background-color: color-mix(in oklab, var(--color-brass-400) 45%, transparent);
+}
+[data-skin='onyx'] .plus-title {
+  color: var(--color-ivory-50);
+}
+[data-skin='onyx'] .plus-lead {
+  color: var(--color-ivory-200);
+}
+
+/* Slova stoje rjeđe — po tome se ovaj izgled prepoznaje jednako kao po boji. */
+[data-skin='onyx'] .plus-label,
+[data-skin='onyx'] .plus-rail-name {
+  letter-spacing: 0.2em;
+}
+
+[data-skin='onyx'] .plus-btn-primary,
+[data-skin='onyx'] .plus-btn-accent,
+[data-skin='onyx'] .plus-btn-ghost {
+  border-radius: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.74rem;
+}
+
+[data-skin='onyx'] .plus-btn-primary,
+[data-skin='onyx'] .plus-btn-accent {
+  background-color: var(--color-brass-400);
+  color: var(--color-onyx-950);
+  box-shadow: none;
+}
+
+[data-skin='onyx'] .plus-btn-primary:hover:not(:disabled),
+[data-skin='onyx'] .plus-btn-accent:hover:not(:disabled) {
+  background-color: var(--color-brass-300);
+  box-shadow: none;
+  transform: none;
+}
+
+[data-skin='onyx'] .plus-btn-ghost {
+  border-color: color-mix(in oklab, var(--color-ivory-100) 30%, transparent);
+  color: var(--color-ivory-100);
+}
+
+[data-skin='onyx'] .plus-btn-ghost:hover:not(:disabled) {
+  border-color: var(--color-brass-400);
+  background-color: transparent;
+  color: var(--color-brass-300);
+}
+
+/* Polje bez okvira — samo vlas-linija ispod, kao na papiru. */
+[data-skin='onyx'] .plus-live-input {
+  border-width: 0 0 1px 0;
+  background-color: transparent;
+  padding-inline: 0 1.9rem;
+}
+
+[data-skin='onyx'] .plus-live-input:focus {
+  box-shadow: none;
+}
+
+[data-skin='onyx'] .plus-live-label {
+  inset-inline-start: 0;
+}
+
+[data-skin='onyx'] .plus-live-underline {
+  inset-inline: 0;
+}
+
+[data-skin='onyx'] .plus-live-tick,
+[data-skin='onyx'] .plus-live-count {
+  inset-inline-end: 0;
+}
+
+[data-skin='onyx'] .plus-step-btn {
+  border-radius: 0;
+}
+
+/* Nadnaslov na tamnoj plohi — u ovoj koži su SVE plohe tamne, pa i on ide
+   na mesing, kao i onaj na svijetloj. */
+[data-skin='onyx'] .plus-eyebrow-onlight {
+  color: var(--color-brass-400);
+}
+[data-skin='onyx'] .plus-eyebrow-onlight::before {
+  background-color: color-mix(in oklab, var(--color-brass-400) 45%, transparent);
+}
+
+/* Dugme preko fotografije (poziv na dnu, jezik u navigaciji). */
+[data-skin='onyx'] .plus-btn-onlight {
+  border-radius: 0;
+  border-color: color-mix(in oklab, var(--color-ivory-100) 30%, transparent);
+  background-color: transparent;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.74rem;
+}
+[data-skin='onyx'] .plus-btn-onlight:hover {
+  border-color: var(--color-brass-400);
+  background-color: transparent;
+  color: var(--color-brass-300);
+}
+
+[data-skin='onyx'] .plus-link {
+  color: var(--color-brass-400);
+}
+[data-skin='onyx'] .plus-link:hover {
+  color: var(--color-brass-300);
+}
+[data-skin='onyx'] .plus-warn {
+  color: var(--color-brass-300);
+}
+
+[data-skin='onyx'] :focus-visible {
+  outline-color: var(--color-brass-400);
+}
+
+/*
+ * Kalendar. Mora stajati NAKON `.plus .rdp-*` pravila iznad — jednake su
+ * težine, pa odlučuje redoslijed. Zato je ovaj blok na dnu fajla.
+ */
+[data-skin='onyx'] .rdp-root {
+  --rdp-accent-color: var(--color-brass-400);
+  --rdp-accent-background-color: var(--color-onyx-800);
+  --rdp-day_button-border-radius: 0;
+  color: var(--color-ivory-100);
+}
+
+[data-skin='onyx'] .rdp-month_caption {
+  color: var(--color-ivory-50);
+}
+
+[data-skin='onyx'] .rdp-weekday {
+  color: var(--color-ivory-500);
+}
+
+[data-skin='onyx'] .rdp-day_button:hover:not([disabled]) {
+  background-color: var(--color-onyx-800);
+}
+
+[data-skin='onyx'] .rdp-day.day-taken .rdp-day_button {
+  color: var(--color-ivory-500);
+  background-color: transparent;
+}
+
+[data-skin='onyx'] .rdp-day.day-taken-pending .rdp-day_button {
+  color: var(--color-brass-500);
+  background-color: transparent;
+}
+
+[data-skin='onyx'] .rdp-range_start .rdp-day_button,
+[data-skin='onyx'] .rdp-range_end .rdp-day_button {
+  background-color: var(--color-brass-400) !important;
+  color: var(--color-onyx-950) !important;
+}
+
+[data-skin='onyx'] .rdp-range_middle .rdp-day_button {
+  background-color: var(--color-onyx-800) !important;
+  color: var(--color-ivory-50) !important;
+}
+
+[data-skin='onyx'] .rdp-today:not(.rdp-selected) .rdp-day_button {
+  color: var(--color-brass-300);
+}
+
+/* Legenda ispod kalendara — tri boje koje na tamnoj podlozi ne rade. */
+[data-skin='onyx'] .stay-legend {
+  color: var(--color-ivory-400);
+}
+[data-skin='onyx'] .stay-legend [data-tone='free'] {
+  background-color: transparent;
+  border-color: color-mix(in srgb, var(--color-ivory-100) 40%, transparent);
+}
+[data-skin='onyx'] .stay-legend [data-tone='taken'] {
+  background-color: var(--color-onyx-700);
+}
+[data-skin='onyx'] .stay-legend [data-tone='selected'] {
+  background-color: var(--color-brass-400);
+}
+
+
+/* ── Stranica potvrde ────────────────────────────────────────────────────
+ *
+ * Ista koža kao ostatak sajta: gost koji je upravo poslao rezervaciju ne
+ * smije završiti na stranici koja izgleda kao neki drugi sajt. Boje idu
+ * preko istih promjenljivih (`--ui-*`), pa i ona prati `data-skin`.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/* Oznaka "rezervisano — čeka potvrdu". */
+.plus-badge-wait {
+  border-radius: var(--ui-radius-sm);
+  background-color: color-mix(in oklab, var(--ui-accent) 12%, transparent);
+  color: var(--ui-accent);
+}
+
+.plus-badge-dot {
+  background-color: var(--ui-accent);
+}
+
+/*
+ * Krug sa znakom stanja.
+ *
+ * Tri stanja, tri boje, i to NE tri nijanse iste: potvrđeno je zeleno,
+ * čekanje mesing, otkazano crveno. Gost mora znati na čemu je s jednog
+ * pogleda, prije nego pročita ijednu riječ.
+ */
+.plus-mark-ok,
+.plus-mark-wait,
+.plus-mark-bad {
+  border-radius: 9999px;
+}
+
+.plus-mark-ok {
+  background-color: color-mix(in oklab, var(--color-success-600) 16%, transparent);
+  color: color-mix(in oklab, var(--color-success-600) 75%, white);
+}
+
+.plus-mark-wait {
+  background-color: color-mix(in oklab, var(--ui-accent) 14%, transparent);
+  color: var(--ui-accent);
+}
+
+.plus-mark-bad {
+  background-color: color-mix(in oklab, var(--color-danger-600) 16%, transparent);
+  color: color-mix(in oklab, var(--color-danger-600) 70%, white);
+}
+
+/* Poštuj sistemsku postavku — neki ljudi od animacija dobiju mučninu. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

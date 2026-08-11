@@ -1,0 +1,45 @@
+/**
+ * Silueta šume — prednji sloj naslovne scene.
+ *
+ * Crtež, a ne fotografija, i to iz nužde koja se dobro poklopila: da bi kamera
+ * mogla "proći kroz" nešto, taj sloj mora biti IZREZAN od pozadine, s
+ * prozirnošću. Fotografija kuće je jedna ravna slika i takvu se ne može
+ * rastaviti. Vektor se rastavlja sam — i ostaje oštar na svakom ekranu i pri
+ * svakom uvećanju, a uvećava se skoro tri puta.
+ *
+ * Četinari nisu nasumičan izbor: kuća se zove TreeScape i stoji u šumi. Isti
+ * crtež bi na bilo kojem drugom sajtu bio ukras; ovdje je to mjesto.
+ *
+ * Putanje su generisane jednom, s fiksnim sjemenom slučajnosti, pa su ovdje
+ * upisane kao gotov tekst — nema računanja pri svakom iscrtavanju.
+ */
+
+/** Red četinara uz donju ivicu ekrana. */
+export function TreelineBottom({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 1440 420"
+      preserveAspectRatio="xMidYMax slice"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M-60,365L0,265L-19,260L7,183L-5,177L28,72L62,177L50,183L76,260L57,265L117,365ZM45,365L119,274L95,268L128,198L113,193L154,96L196,193L180,198L213,268L189,274L264,365ZM156,365L234,263L209,257L243,179L227,173L271,65L314,173L298,179L333,257L308,263L385,365ZM261,365L337,269L312,264L346,191L330,185L372,84L415,185L399,191L432,264L408,269L483,365ZM376,365L443,298L421,294L451,243L437,239L475,168L512,239L498,243L528,294L506,298L574,365ZM463,365L516,302L499,298L523,250L512,246L542,179L572,246L561,250L584,298L567,302L621,365ZM532,365L608,254L583,247L617,162L601,156L643,38L686,156L670,162L704,247L679,254L755,365ZM654,365L720,280L699,275L728,209L715,204L752,114L789,204L775,209L805,275L783,280L850,365ZM774,365L843,261L821,254L851,175L837,169L875,58L914,169L900,175L930,254L908,261L977,365ZM886,365L953,313L931,310L961,270L947,267L985,212L1023,267L1009,270L1039,310L1017,313L1085,365ZM1002,365L1046,309L1032,306L1051,263L1042,259L1066,200L1091,259L1082,263L1101,306L1087,309L1130,365ZM1057,365L1108,262L1091,256L1114,177L1103,171L1132,62L1160,171L1150,177L1172,256L1156,262L1207,365ZM1121,365L1182,286L1162,281L1189,221L1176,216L1210,132L1244,216L1232,221L1259,281L1239,286L1300,365ZM1212,365L1289,297L1264,293L1298,241L1282,237L1325,165L1368,237L1352,241L1387,293L1362,297L1439,365ZM1331,365L1399,288L1377,284L1407,226L1393,221L1431,140L1469,221L1455,226L1485,284L1463,288L1532,365ZM1435,365L1505,307L1482,303L1513,259L1498,256L1537,194L1576,256L1562,259L1592,303L1570,307L1639,365ZM0,365L1440,365L1440,420L0,420Z" />
+    </svg>
+  );
+}
+
+/** Rub krošnje uz gornju ivicu — kao da se gleda ispod grana. */
+export function CanopyTop({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 1440 300"
+      preserveAspectRatio="xMidYMin slice"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M0,0L1440,0L1440,60C1399,142 1318,130 1277,100C1247,170 1188,154 1158,90C1115,236 1028,210 985,93C957,266 900,235 872,99C834,182 756,164 718,103C679,223 600,199 561,88C530,262 466,232 435,64C403,205 339,183 307,79C268,227 190,202 151,63C105,255 46,226 0,115L0,0Z" />
+    </svg>
+  );
+}
