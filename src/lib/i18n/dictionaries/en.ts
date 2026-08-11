@@ -556,6 +556,8 @@ export const en: Dictionary = {
     contact: 'Contact',
     quickLinks: 'Quick links',
     rights: 'All rights reserved.',
+    privacy: 'Privacy policy',
+    terms: 'Terms of use',
     address: 'Bosnia and Herzegovina',
   },
 

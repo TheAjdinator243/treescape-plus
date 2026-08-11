@@ -554,6 +554,8 @@ export const ar: Dictionary = {
     contact: 'اتصل بنا',
     quickLinks: 'روابط سريعة',
     rights: 'جميع الحقوق محفوظة.',
+    privacy: 'سياسة الخصوصية',
+    terms: 'شروط الاستخدام',
     address: 'البوسنة والهرسك',
   },
 

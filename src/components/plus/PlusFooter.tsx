@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { Parallax } from '@/components/motion/Parallax';
 import { CONTACT } from '@/lib/contact';
 import { getServerStrings } from '@/lib/i18n/server';
@@ -97,6 +99,16 @@ export async function PlusFooter() {
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t plus-rule-on pt-6 text-xs plus-dimmer-on">
           <p>
             © {year} {t.site.name}. {t.footer.rights}
+          </p>
+
+          {/* Pravni tekstovi stoje u dnu, gdje ih gost i traži. */}
+          <p className="flex gap-5">
+            <Link href="/privatnost" className="transition-colors hover:plus-ink-on">
+              {t.footer.privacy}
+            </Link>
+            <Link href="/uslovi" className="transition-colors hover:plus-ink-on">
+              {t.footer.terms}
+            </Link>
           </p>
         </div>
       </div>

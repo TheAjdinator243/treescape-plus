@@ -559,6 +559,8 @@ export const bs: Dictionary = {
     contact: 'Kontakt',
     quickLinks: 'Brzi linkovi',
     rights: 'Sva prava zadržana.',
+    privacy: 'Politika privatnosti',
+    terms: 'Uslovi korištenja',
     address: 'Bosna i Hercegovina',
   },
 

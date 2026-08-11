@@ -50,6 +50,19 @@ function csp(nonce: string): string {
       : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
     // Kalendar sluša promjene uživo preko Supabase-a, i to WebSocket-om.
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+    /*
+     * Karta lokacije je OpenStreetMap okvir.
+     *
+     * Bez ovog reda važi `default-src 'self'`, pa preglednik odbije okvir s
+     * porukom "Refused to frame 'https://www.openstreetmap.org/'" — a gost na
+     * mjestu karte vidi praznu plohu. Tako je i bilo, na sve tri verzije
+     * sajta, sve dok se to nije izmjerilo.
+     *
+     * Dozvola je uska koliko može biti: jedan domen, i to samo za okvir.
+     * `frame-ancestors 'none'` iznad i dalje brani da NAS neko uokviri —
+     * ovo su dva različita smjera i ne poništavaju se.
+     */
+    'frame-src https://www.openstreetmap.org',
     'upgrade-insecure-requests',
   ].join('; ');
 }

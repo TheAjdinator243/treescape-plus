@@ -484,6 +484,9 @@ export interface Dictionary {
     rights: string;
     /** Gruba adresa uz kontakt — tačnu gost dobija tek nakon potvrde. */
     address: string;
+    /** Linkovi u dnu — pravni tekstovi. */
+    privacy: string;
+    terms: string;
   };
 
   email: {
