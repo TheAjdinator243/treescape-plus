@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { addDaysStr, todayStr } from './dates';
+import { citajIzBaze } from './db-read';
 import { DEMO_SETTINGS, demoPeriods, demoSlots } from './demo-data';
 import { env, isDatabaseConfigured } from './env';
 import { availableMethods } from './payments';
@@ -63,35 +64,25 @@ export async function getAvailability(): Promise<AvailabilitySlot[]> {
 
   const horizon = addDaysStr(todayStr(), 730);
 
-  const { data, error } = await supabaseAdmin()
-    .from('availability_slots')
-    .select('booking_id, start_date, end_date, kind')
-    .gte('end_date', todayStr())
-    .lte('start_date', horizon)
-    .order('start_date', { ascending: true });
-
-  if (error) {
-    console.error('[treescape] čitanje dostupnosti nije uspjelo:', error.message);
-    return [];
-  }
-
-  return (data ?? []) as AvailabilitySlot[];
+  return citajIzBaze<AvailabilitySlot[]>('dostupnost termina', () =>
+    supabaseAdmin()
+      .from('availability_slots')
+      .select('booking_id, start_date, end_date, kind')
+      .gte('end_date', todayStr())
+      .lte('start_date', horizon)
+      .order('start_date', { ascending: true })
+  );
 }
 
 export async function getRatePeriods(): Promise<RatePeriod[]> {
   if (!isDatabaseConfigured) return demoPeriods();
 
-  const { data, error } = await supabaseAdmin()
-    .from('rate_periods')
-    .select('id, name, start_date, end_date, nightly_price_cents, min_nights, priority')
-    .order('priority', { ascending: false });
-
-  if (error) {
-    console.error('[treescape] čitanje cjenovnika nije uspjelo:', error.message);
-    return [];
-  }
-
-  return (data ?? []) as RatePeriod[];
+  return citajIzBaze<RatePeriod[]>('cjenovnik', () =>
+    supabaseAdmin()
+      .from('rate_periods')
+      .select('id, name, start_date, end_date, nightly_price_cents, min_nights, priority')
+      .order('priority', { ascending: false })
+  );
 }
 
 /**
@@ -159,14 +150,11 @@ function normalizeSettings(row: Record<string, unknown>): Settings {
 export async function getSettings(): Promise<Settings> {
   if (!isDatabaseConfigured) return DEMO_SETTINGS;
 
-  const { data, error } = await supabaseAdmin().from('settings').select('*').eq('id', 1).single();
+  const data = await citajIzBaze<Record<string, unknown>>('postavke', () =>
+    supabaseAdmin().from('settings').select('*').eq('id', 1).single()
+  );
 
-  if (error || !data) {
-    console.error('[treescape] čitanje postavki nije uspjelo:', error?.message);
-    return DEMO_SETTINGS;
-  }
-
-  return normalizeSettings(data as Record<string, unknown>);
+  return normalizeSettings(data);
 }
 
 /** Sve što kalendaru treba za prvi prikaz — u jednom prolazu. */
