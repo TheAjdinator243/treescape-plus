@@ -1745,10 +1745,23 @@ html[lang='ar'] body * {
   color: var(--ui-ink);
 }
 
-.plus .plus-card {
+/*
+ * OBJE kartice, i obična i ona koja se odiže.
+ *
+ * `plus-card-lift` nije ista klasa nego SVOJA, koja kroz `@apply` u sebe
+ * upiše sadržaj `plus-card`-a. U DOM-u zato nema klase `plus-card`, pa je
+ * pravilo pisano samo za nju nikad ne dohvati — kartica ostane bijela, a
+ * naslov na njoj je svijetao, dakle nevidljiv. Zato ovdje stoje obje.
+ */
+.plus .plus-card,
+.plus .plus-card-lift {
   background-color: var(--ui-panel);
   border-color: var(--ui-line);
   border-radius: var(--ui-radius);
+}
+
+.plus .plus-card-lift:hover {
+  border-color: var(--ui-line-soft);
 }
 
 .plus .plus-bar {
@@ -1954,7 +1967,13 @@ html[lang='ar'] body * {
   color: var(--ui-ink);
 }
 
-[data-skin='onyx'] .plus-card {
+[data-skin='onyx'] .plus-card,
+[data-skin='onyx'] .plus-card-lift {
+  box-shadow: none;
+}
+
+[data-skin='onyx'] .plus-card-lift:hover {
+  border-color: var(--color-brass-400);
   box-shadow: none;
 }
 
