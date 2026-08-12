@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { Parallax } from '@/components/motion/Parallax';
 import { CONTACT } from '@/lib/contact';
+import { localePath } from '@/lib/i18n';
 import { getServerStrings } from '@/lib/i18n/server';
 
 /**
@@ -14,7 +15,7 @@ import { getServerStrings } from '@/lib/i18n/server';
  * bude ime, a ne spisak linkova.
  */
 export async function PlusFooter() {
-  const { t } = await getServerStrings();
+  const { locale, t } = await getServerStrings();
   const year = new Date().getFullYear();
 
   const links = [
@@ -103,10 +104,16 @@ export async function PlusFooter() {
 
           {/* Pravni tekstovi stoje u dnu, gdje ih gost i traži. */}
           <p className="flex gap-5">
-            <Link href="/privatnost" className="transition-colors hover:plus-ink-on">
+            <Link
+              href={localePath(locale, '/privatnost')}
+              className="transition-colors hover:plus-ink-on"
+            >
               {t.footer.privacy}
             </Link>
-            <Link href="/uslovi" className="transition-colors hover:plus-ink-on">
+            <Link
+              href={localePath(locale, '/uslovi')}
+              className="transition-colors hover:plus-ink-on"
+            >
               {t.footer.terms}
             </Link>
           </p>

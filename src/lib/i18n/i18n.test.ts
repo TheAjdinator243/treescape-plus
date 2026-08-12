@@ -9,9 +9,12 @@ import {
   directionOf,
   getStrings,
   localeFromAcceptLanguage,
+  localeFromPathname,
   localeFromRequest,
+  localePath,
   normalizeLocale,
   plural,
+  stripLocale,
 } from './index';
 
 /**
@@ -50,6 +53,45 @@ describe('prepoznavanje jezika', () => {
 
   it('bez ijednog nagovještaja pada na jezik kuće', () => {
     expect(localeFromRequest(new Request('https://treescape.ba/'))).toBe(DEFAULT_LOCALE);
+  });
+});
+
+describe('jezik u adresi', () => {
+  it('čita jezik iz prvog segmenta', () => {
+    expect(localeFromPathname('/en')).toBe('en');
+    expect(localeFromPathname('/ar/uslovi')).toBe('ar');
+    expect(localeFromPathname('/bs/rezervacija/abc-123')).toBe('bs');
+  });
+
+  it('adresa bez jezika nije adresa s pogrešnim jezikom', () => {
+    // Ovo je razlika koju `proxy.ts` koristi: `null` znači "preusmjeri", a ne
+    // "prikaži na bosanskom pod tuđom adresom".
+    expect(localeFromPathname('/')).toBeNull();
+    expect(localeFromPathname('/uslovi')).toBeNull();
+    expect(localeFromPathname('/de/uslovi')).toBeNull();
+    // 'admin' je stranica, ne jezik — ovdje bi previše labava provjera odvela
+    // administraciju na /bs/admin.
+    expect(localeFromPathname('/admin')).toBeNull();
+  });
+
+  it('skida jezik s adrese', () => {
+    expect(stripLocale('/en/uslovi')).toBe('/uslovi');
+    expect(stripLocale('/en')).toBe('/');
+    expect(stripLocale('/uslovi')).toBe('/uslovi');
+    expect(stripLocale('/')).toBe('/');
+  });
+
+  it('sastavlja adresu na drugom jeziku', () => {
+    expect(localePath('en')).toBe('/en');
+    expect(localePath('ar', '/uslovi')).toBe('/ar/uslovi');
+    expect(localePath('bs', '/rezervacija/abc-123')).toBe('/bs/rezervacija/abc-123');
+  });
+
+  it('ne slaže jezik na jezik', () => {
+    // Prebacivač zove ovo nad TRENUTNOM adresom, koja jezik već nosi. Bez ovog
+    // pravila bi engleski gost s /bs/uslovi završio na /en/bs/uslovi.
+    expect(localePath('en', '/bs/uslovi')).toBe('/en/uslovi');
+    expect(localePath('en', '/bs')).toBe('/en');
   });
 });
 

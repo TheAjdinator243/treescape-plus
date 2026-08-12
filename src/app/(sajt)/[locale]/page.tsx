@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import { PlusAbout } from '@/components/plus/PlusAbout';
 import { PlusBooking } from '@/components/plus/PlusBooking';
 import { PlusCta } from '@/components/plus/PlusCta';
@@ -10,7 +12,9 @@ import { PlusNav } from '@/components/plus/PlusNav';
 import { PlusShowcase } from '@/components/plus/PlusShowcase';
 import { PlusSteps } from '@/components/plus/PlusSteps';
 import { getBookingContext } from '@/lib/data';
+import { getLocale } from '@/lib/i18n/server';
 import { firstFreeDate, lowestNightlyCents } from '@/lib/pricing';
+import { localeAlternates } from '@/lib/seo';
 
 /**
  * Početna stranica.
@@ -28,6 +32,15 @@ import { firstFreeDate, lowestNightlyCents } from '@/lib/pricing';
  * unaprijed izgrađena stranica bi gostu pokazala kalendar od jučer.
  */
 export const dynamic = 'force-dynamic';
+
+/**
+ * Naslov i opis stoje u korijenskom layoutu; ovdje se dodaje samo ono što
+ * layout ne može znati — koja je adresa ove stranice i gdje su joj sestre na
+ * druga dva jezika.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  return { alternates: localeAlternates(await getLocale()) };
+}
 
 export default async function Pocetna() {
   const context = await getBookingContext();
