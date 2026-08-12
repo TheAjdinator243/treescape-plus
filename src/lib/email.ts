@@ -5,7 +5,14 @@ import { Resend } from 'resend';
 import { getSettings } from './data';
 import { formatRange } from './dates';
 import { emailTransport, env } from './env';
-import { DEFAULT_LOCALE, directionOf, getStrings, normalizeLocale, type Locale } from './i18n';
+import {
+  DEFAULT_LOCALE,
+  directionOf,
+  getStrings,
+  localePath,
+  normalizeLocale,
+  type Locale,
+} from './i18n';
 import { formatMoney } from './pricing';
 import { GOOGLE_MAPS_URL } from './location';
 import { bookingReference } from './reference';
@@ -409,7 +416,10 @@ async function stayTimes(locale: Locale): Promise<string> {
  */
 function bookingButton(locale: Locale, booking: Booking): string {
   const t = getStrings(locale);
-  const url = `${env.siteUrl}/rezervacija/${booking.booking_public_link}`;
+  // Jezik ide i u adresu, ne samo u tekst maila: gost koji je rezervisao na
+  // engleskom otvara link i dobija stranicu na engleskom, bez obzira šta mu
+  // preglednik javlja i šta mu je ostalo u kolačiću.
+  const url = `${env.siteUrl}${localePath(locale, `/rezervacija/${booking.booking_public_link}`)}`;
 
   return `<p style="margin:24px 0 0">
             <a href="${url}" style="display:inline-block;background:#2a5a47;color:#faf7f1;text-decoration:none;padding:12px 24px;border-radius:999px;font-size:14px;font-weight:600">

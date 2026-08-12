@@ -1,35 +1,35 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 
-import { LOCALES, LOCALE_COOKIE, LOCALE_MAX_AGE, directionOf, isLocale } from '@/lib/i18n';
+import { LOCALES, isLocale, localePath } from '@/lib/i18n';
 
 import { useI18n } from './LocaleProvider';
+import { rememberLocale } from './remember';
 
 /**
  * Prebacivanje jezika.
  *
- * Izbor ide u kolačić, pa ga sljedeći zahtjev vidi i server — tako i naslov
- * stranice, i mailovi, i poruke o greškama iz API-ja stignu na pravom jeziku.
+ * Otkako svaki jezik ima svoju adresu, ovo je obična navigacija: s
+ * `/bs/uslovi` se ide na `/en/uslovi`, dakle na ISTU stranicu, a ne na
+ * početnu. Adresa u traci se mijenja, pa se stranica na odabranom jeziku može
+ * i podijeliti — što je i bila poenta razdvajanja.
  *
- * `lang` i `dir` na <html> se mijenjaju odmah, ručno, a tek onda se traži
- * osvježenje sa servera. Bez toga bi stranica na trenutak stajala s arapskim
- * tekstom u lijevo-desnom rasporedu, dok ne stigne novi odgovor.
+ * Kolačić se i dalje piše, ali više ne odlučuje šta se vidi: služi golom `/`,
+ * starim linkovima bez jezika i mailovima (vidi `rememberLocale`).
  */
 export function LanguageSwitcher({ tone = 'light' }: { tone?: 'light' | 'dark' | 'onyx' }) {
   const { locale, t } = useI18n();
   const router = useRouter();
+  const pathname = usePathname();
   const [pending, startTransition] = useTransition();
 
   function choose(next: string) {
     if (!isLocale(next) || next === locale) return;
 
-    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${LOCALE_MAX_AGE}; samesite=lax`;
-    document.documentElement.lang = next;
-    document.documentElement.dir = directionOf(next);
-
-    startTransition(() => router.refresh());
+    rememberLocale(next);
+    startTransition(() => router.push(localePath(next, pathname)));
   }
 
   /**

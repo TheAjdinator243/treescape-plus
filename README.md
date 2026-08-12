@@ -108,30 +108,51 @@ Sajt govori tri jezika:
 | English | `en` | slijeva nadesno |
 | العربية (arapski) | `ar` | **zdesna nalijevo** |
 
-**Kako se bira.** Prvi put gost dobija ulazni ekran s pitanjem o jeziku, prije
-nego se sajt uopće vidi. Pitanje na tom ekranu **kruži kroz sva tri jezika** dok
-se ne odabere — ekran koji piše samo „Odaberite jezik" pomaže jedino onome ko
-već razumije bosanski. Nazivi jezika na dugmadima stalno stoje u svom pismu
-(Bosanski / English / العربية), pa se dugme može pogoditi i prije nego pitanje
-dođe na red. Kruženje počinje od jezika koji je preglednik nagovijestio.
+**Svaki jezik ima svoju adresu.**
 
-Izbor se pamti u kolačiću `treescape_jezik` godinu dana i **ekran se više nikada
-ne pojavljuje**. Ko se poslije predomisli, mijenja jezik u navigaciji.
+| Adresa | Šta je |
+|---|---|
+| `/` | izbor jezika — jedina stranica bez jezika |
+| `/bs`, `/en`, `/ar` | sajt, po jezicima |
+| `/en/uslovi`, `/ar/privatnost`, … | podstranice |
+| `/bs/rezervacija/<token>` | potvrda rezervacije |
 
-Izričit izbor uvijek pobjeđuje preglednik. Ko je jednom kliknuo „English", ne
-želi da mu se sajt vrati na bosanski samo zato što mu je Windows na tom jeziku.
+**Kako se bira.** Ko dođe na goli `/` prvi put, dobija ekran s pitanjem o
+jeziku. Pitanje na tom ekranu **kruži kroz sva tri jezika** — ekran koji piše
+samo „Odaberite jezik" pomaže jedino onome ko već razumije bosanski. Nazivi
+jezika stalno stoje u svom pismu (Bosanski / English / العربية), pa se link može
+pogoditi i prije nego pitanje dođe na red. Kruženje počinje od jezika koji je
+preglednik nagovijestio.
 
-> Ulazni ekran je sloj **preko** sajta, a ne umjesto njega: sadržaj se iscrtava
-> normalno i ostaje u HTML-u, pa ga pretraživači i dalje vide. Bez JavaScripta
-> se ekran preskače (vidi `<noscript>` u `layout.tsx`) — inače bi zauvijek
-> stajao, jer se izbor bez JavaScripta ne može ni napraviti ni zapamtiti.
+To su **tri obična linka na tri adrese**, pa rade i bez JavaScripta, a
+pretraživač kroz njih nađe sve tri verzije sajta.
+
+Izbor se pamti u kolačiću `treescape_jezik` godinu dana, ali kolačić više ne
+odlučuje šta se vidi — to radi adresa. Kolačiću ostaje troje:
+
+1. goli `/` — s kolačićem se ide pravo na svoj jezik, bez pitanja
+2. stari linkovi bez jezika (`/uslovi`, `/rezervacija/<token>`) — po njemu se
+   zna na koju verziju ih preusmjeriti
+3. mailovi i poruke o greškama iz API-ja, gdje adrese nema
+
+**Adresa uvijek pobjeđuje.** Ko otvori `/en`, dobija engleski — pa makar mu u
+kolačiću stajao bosanski. Bez tog pravila podijeljen link ne bi vrijedio ništa:
+pošalješ `/en` gostu iz Emirata, a on vidi bosanski jer je jednom bio ovdje.
+
+**Stari linkovi rade.** Sve što je otišlo u mailove i poruke prije razdvajanja
+(`/uslovi`, `/rezervacija/<token>`) `proxy.ts` preusmjerava na verziju s
+jezikom, uz sačuvane parametre upita.
+
+**Prebacivač jezika** vodi na ISTU stranicu na drugom jeziku — s `/bs/uslovi` na
+`/en/uslovi`, a ne na početnu.
 
 **Šta se sve prevodi.** Cijela stranica, administracija, poruke o greškama iz
 API-ja i mailovi. Jezik na kojem je gost rezervisao upisuje se uz rezervaciju
 (kolona `bookings.locale`) — jer potvrda ili odbijanje zahtjeva
 za gotovinu stižu danima kasnije, iz administracije, kad od gosta više nema ni
 kolačića ni zaglavlja. Mailovi vlasniku idu na bosanskom, ali nose podatak o
-tome kojim jezikom gost govori.
+tome kojim jezikom gost govori; link na potvrdu u mailu nosi gostov jezik u
+adresi.
 
 **Arapski.** Cijela stranica se okreće preko `dir="rtl"` na `<html>`; komponente
 nigdje ne provjeravaju koji je jezik u pitanju, nego koriste logičke Tailwind
@@ -141,20 +162,21 @@ arapskom prvo lomi riječi, a drugo ne postoji. Cifre ostaju latinične, da izno
 od 345 KM i datum 5.8.2026. ne budu pisani dvjema vrstama cifara na istom
 ekranu.
 
-**Jedna adresa, ne tri.** Jezik se bira kolačićem, pa sve tri verzije žive na
-istoj adresi — nema `/en/` ni `/ar/`. Za goste je to najjednostavnije: link
-podijeljen na WhatsAppu radi svakome na njegovom jeziku.
+**SEO.** Svaka stranica nosi `canonical` na svoju adresu i `hreflang` na ostale
+dvije, `x-default` pokazuje na `/`, a `sitemap.xml` prijavljuje sve tri verzije
+svake stranice. Dok su jezici dijelili jednu adresu, Google je indeksirao samo
+bosansku — njegov robot nema kolačić.
 
-Cijena toga je SEO: Google indeksira samo bosansku verziju, jer njegov robot
-nema kolačić. Ako jednog dana bude važno da se sajt nalazi i po arapskim
-upitima, jezici moraju dobiti svoje adrese (`/en`, `/ar`) i `hreflang` oznake.
-Rječnici i sve ostalo ovdje ostaju isti — mijenja se samo gdje se jezik čita.
+**Odakle serveru jezik.** Iz adrese, ali okolnim putem: korijenski `layout.tsx`
+piše `lang` i `dir` na `<html>`, a `params` ugniježđenog `[locale]` ne vidi.
+Zato `proxy.ts` jezik iz adrese doda u zaglavlja zahtjeva (`LOCALE_HEADER`), a
+`getLocale()` ga odatle pročita.
 
 **Kako dodati četvrti jezik.**
 
 1. Dodaj oznaku u `LOCALES` i smjer u `DIRECTIONS`
-   ([`src/lib/i18n/config.ts`](src/lib/i18n/config.ts)) — ulazni ekran sam
-   dobija novo dugme i novi jezik u kruženju
+   ([`src/lib/i18n/config.ts`](src/lib/i18n/config.ts)) — adresa `/<oznaka>`,
+   ekran s izborom, `hreflang` i `sitemap.xml` se sami prošire
 2. Napravi `src/lib/i18n/dictionaries/<oznaka>.ts` po uzoru na `bs.ts`
 3. Upiši ga u `DICTIONARIES` ([`src/lib/i18n/index.ts`](src/lib/i18n/index.ts))
 4. Dodaj oblike množine u `plural` ([`src/lib/i18n/plural.ts`](src/lib/i18n/plural.ts))

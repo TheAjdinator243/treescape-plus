@@ -5,6 +5,7 @@ import { cookies, headers } from 'next/headers';
 import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE,
+  LOCALE_HEADER,
   localeFromAcceptLanguage,
   normalizeLocale,
   type Locale,
@@ -15,19 +16,28 @@ import type { Dictionary } from './dictionary';
 /**
  * Jezik za serverske komponente.
  *
- * Redoslijed je bitan: izričit izbor iz kolačića uvijek pobjeđuje ono što
- * preglednik nagađa. Ko je jednom kliknuo "English", ne želi da mu se sajt
- * vrati na bosanski samo zato što mu je Windows na tom jeziku.
+ * Redoslijed je bitan, i od uvođenja jezika u adresu ide ovako:
  *
- * Napomena: `cookies()` čini cijelo stablo dinamičnim. Ovdje to ništa ne
- * mijenja — sve stranice su ionako `force-dynamic`, jer dostupnost termina ne
- * smije biti keširana.
+ * 1. ADRESA. Ko otvori /en, dobija engleski — pa makar mu u kolačiću stajao
+ *    bosanski. Bez ovoga podijeljen link ne bi vrijedio ništa: pošalješ /en
+ *    gostu iz Emirata, a on ga otvori i vidi bosanski jer je jednom bio ovdje.
+ * 2. KOLAČIĆ. Za sve što nema jezik u adresi — administracija, mailovi,
+ *    poruke o greškama iz API-ja.
+ * 3. Nagađanje iz preglednika, pa bosanski.
+ *
+ * Napomena: `headers()` i `cookies()` čine cijelo stablo dinamičnim. Ovdje to
+ * ništa ne mijenja — sve stranice su ionako `force-dynamic`, jer dostupnost
+ * termina ne smije biti keširana.
  */
 export async function getLocale(): Promise<Locale> {
+  const headerStore = await headers();
+
+  const inPath = normalizeLocale(headerStore.get(LOCALE_HEADER));
+  if (inPath) return inPath;
+
   const chosen = await getChosenLocale();
   if (chosen) return chosen;
 
-  const headerStore = await headers();
   return localeFromAcceptLanguage(headerStore.get('accept-language')) ?? DEFAULT_LOCALE;
 }
 

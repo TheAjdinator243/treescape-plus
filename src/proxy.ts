@@ -1,7 +1,15 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { ADMIN_COOKIE, isValidSession } from '@/lib/admin-session';
-import { getStrings, localeFromRequest } from '@/lib/i18n';
+import {
+  LOCALE_COOKIE,
+  LOCALE_HEADER,
+  getStrings,
+  localeFromPathname,
+  localeFromRequest,
+  localePath,
+  normalizeLocale,
+} from '@/lib/i18n';
 
 /**
  * Čuvar administracije i pravila o sadržaju (CSP).
@@ -73,6 +81,53 @@ function withSecurityHeaders(response: NextResponse, policy: string): NextRespon
 }
 
 /**
+ * Jezik u adresi: /bs, /en, /ar.
+ *
+ * Dvije stvari se ovdje rješavaju, obje samo za javni dio sajta:
+ *
+ * 1. Adresa BEZ jezika se preusmjerava na onu s jezikom. To pokriva i golo `/`,
+ *    i stare linkove (`/uslovi`, `/rezervacija/<token>`) koji su već otišli u
+ *    mailove i poruke — oni moraju nastaviti raditi.
+ *
+ * 2. Adresa S jezikom nastavlja dalje, ali se jezik ubaci u zaglavlja zahtjeva.
+ *    Korijenski `layout.tsx` piše `lang` i `dir` na <html>, a `params` iz
+ *    `[locale]` ne vidi (vidi `LOCALE_HEADER`).
+ *
+ * Šta odlučuje jezik pri preusmjeravanju: prvo izričit izbor iz kolačića, pa
+ * `Accept-Language`, pa bosanski. Ko je jednom kliknuo "English", ne završava
+ * na bosanskoj verziji zato što je otvorio goli domen.
+ */
+function withLocale(request: NextRequest, headers: Headers, policy: string): NextResponse {
+  const { pathname, search } = request.nextUrl;
+
+  const inPath = localeFromPathname(pathname);
+
+  if (inPath) {
+    headers.set(LOCALE_HEADER, inPath);
+    return withSecurityHeaders(NextResponse.next({ request: { headers } }), policy);
+  }
+
+  // Goli `/` je raskrsnica: ko je jezik već birao, prolazi kroz nju bez
+  // zaustavljanja; ko nije, dobija pitanje. Ovdje se, dakle, gleda SAMO
+  // kolačić — nagađanje iz preglednika ne smije preskočiti pitanje.
+  if (pathname === '/') {
+    const chosen = normalizeLocale(request.cookies.get(LOCALE_COOKIE)?.value);
+    if (!chosen) return withSecurityHeaders(NextResponse.next({ request: { headers } }), policy);
+
+    return withSecurityHeaders(
+      NextResponse.redirect(new URL(localePath(chosen) + search, request.url)),
+      policy
+    );
+  }
+
+  // Sve ostalo bez jezika u adresi su stari linkovi — `/uslovi`,
+  // `/rezervacija/<token>` iz mailova koji su odavno poslani. Oni moraju
+  // nastaviti raditi, pa se prevode na verziju s jezikom.
+  const target = new URL(localePath(localeFromRequest(request), pathname) + search, request.url);
+  return withSecurityHeaders(NextResponse.redirect(target), policy);
+}
+
+/**
  * Provjera stoji ispred svake admin stranice i svake admin API rute, pa nijedna
  * nova ruta ne može slučajno ostati nezaštićena — dovoljno je da putanja počinje
  * sa /admin ili /api/admin.
@@ -99,6 +154,9 @@ export default async function proxy(request: NextRequest) {
 
   const isAdminPath = pathname === '/admin' || pathname.startsWith('/admin/');
   const isAdminApi = pathname.startsWith('/api/admin');
+  const isApi = pathname.startsWith('/api/');
+
+  if (!isAdminPath && !isApi) return withLocale(request, headers, policy);
 
   if (!isAdminPath && !isAdminApi) return proceed();
 

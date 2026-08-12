@@ -6,6 +6,7 @@ import type { DateRange } from 'react-day-picker';
 
 import { useI18n } from '@/components/i18n/LocaleProvider';
 import { addDaysStr, toDateStr } from '@/lib/dates';
+import { localePath } from '@/lib/i18n';
 import type { Dictionary } from '@/lib/i18n/dictionary';
 import { quoteStay, rangeHasConflict, validateStay } from '@/lib/pricing';
 import type { BookingContext, PaymentMethod, PriceBreakdown } from '@/lib/types';
@@ -184,7 +185,8 @@ export function useStayForm(context: BookingContext): StayForm {
       }
 
       // Spinner namjerno ostaje upaljen — stranica odlazi na potvrdu.
-      router.push(`/rezervacija/${data.token}`);
+      // Potvrda ostaje na jeziku na kojem je forma i popunjena.
+      router.push(localePath(locale, `/rezervacija/${data.token}`));
     } catch {
       setError(t.errors.SERVER_ERROR);
       setSubmitting(false);

@@ -101,6 +101,46 @@ export function localeFromAcceptLanguage(header: string | null | undefined): Loc
   return null;
 }
 
+/**
+ * Zaglavlje kojim `proxy.ts` javlja serverskim komponentama koji jezik stoji u
+ * adresi.
+ *
+ * Postoji zbog jedne rupe u Next.js-u: korijenski `layout.tsx` piše `lang` i
+ * `dir` na <html>, ali ne dobija `params` ugniježđenih segmenata, pa `[locale]`
+ * iz adrese ne može pročitati. Proxy adresu vidi prije svih, pa jezik prosto
+ * doda u zahtjev.
+ */
+export const LOCALE_HEADER = 'x-treescape-jezik';
+
+/**
+ * Jezik iz prvog segmenta adrese: '/en/uslovi' → 'en'.
+ *
+ * `null` znači "u adresi nema jezika" — tada `proxy.ts` preusmjerava na
+ * verziju s jezikom, pa se takva adresa do stranice nikad i ne probije.
+ */
+export function localeFromPathname(pathname: string): Locale | null {
+  const first = pathname.split('/').filter(Boolean)[0];
+  return isLocale(first) ? first : null;
+}
+
+/** '/en/uslovi' → '/uslovi', '/en' → '/', '/uslovi' → '/uslovi'. */
+export function stripLocale(pathname: string): string {
+  const segments = pathname.split('/').filter(Boolean);
+  if (isLocale(segments[0])) segments.shift();
+  return segments.length ? `/${segments.join('/')}` : '/';
+}
+
+/**
+ * Adresa iste stranice na drugom jeziku: ('en', '/uslovi') → '/en/uslovi'.
+ *
+ * Prima i putanju koja jezik već nosi, pa se može zvati i nad trenutnom
+ * adresom pri promjeni jezika — bez ovoga bi izlazilo '/en/bs/uslovi'.
+ */
+export function localePath(locale: Locale, pathname = '/'): string {
+  const rest = stripLocale(pathname);
+  return rest === '/' ? `/${locale}` : `/${locale}${rest}`;
+}
+
 /** Vrijednost jednog kolačića iz sirovog `Cookie` zaglavlja. */
 function cookieValue(header: string | null, name: string): string | null {
   if (!header) return null;

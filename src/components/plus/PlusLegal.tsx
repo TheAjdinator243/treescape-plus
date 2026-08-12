@@ -19,7 +19,16 @@ import { operatorNijePopunjen } from '@/lib/legal';
  * je papir bez potpisa, a najlakše ju je objaviti upravo takvu — pa neka smeta
  * dok se ne popuni.
  */
-export function PlusLegal({ doc, backLabel }: { doc: LegalDoc; backLabel: string }) {
+export function PlusLegal({
+  doc,
+  backLabel,
+  backHref,
+}: {
+  doc: LegalDoc;
+  backLabel: string;
+  /** Početna NA ISTOM JEZIKU — '/en', a ne '/'. */
+  backHref: string;
+}) {
   return (
     <main className="plus-surface">
       <div className="mx-auto w-full max-w-2xl px-5 py-20 sm:px-8 sm:py-28">
@@ -47,7 +56,7 @@ export function PlusLegal({ doc, backLabel }: { doc: LegalDoc; backLabel: string
           ))}
         </div>
 
-        <Link href="/" className="plus-btn-ghost mt-16 inline-flex">
+        <Link href={backHref} className="plus-btn-ghost mt-16 inline-flex">
           {backLabel}
         </Link>
       </div>

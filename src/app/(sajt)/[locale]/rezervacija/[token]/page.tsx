@@ -9,6 +9,7 @@ import { getBookingByToken } from '@/lib/booking-service';
 import { getSettings } from '@/lib/data';
 import { formatLong, formatRange, todayStr } from '@/lib/dates';
 import { isDatabaseConfigured } from '@/lib/env';
+import { localePath } from '@/lib/i18n';
 import { getServerStrings } from '@/lib/i18n/server';
 import { formatMoney } from '@/lib/pricing';
 import { bookingReference } from '@/lib/reference';
@@ -61,10 +62,7 @@ export default async function ConfirmationPage({ params }: { params: Promise<{ t
 
       <main className="plus-surface flex min-h-dvh flex-col items-center justify-center px-5 py-16">
         <div className="plus-card w-full max-w-lg p-8 sm:p-10">
-          <Link
-            href="/"
-            className="plus-accent text-lg transition-colors"
-          >
+          <Link href={localePath(locale)} className="plus-accent text-lg transition-colors">
             {t.site.name}
           </Link>
 
@@ -163,7 +161,7 @@ export default async function ConfirmationPage({ params }: { params: Promise<{ t
               provjerava ponovo — ovdje se dugme samo ne pokazuje uzalud. */}
           {!isDead && booking.end_date > todayStr() && <CancelBooking token={token} />}
 
-          <Link href="/" className="plus-btn-ghost mt-8 w-full">
+          <Link href={localePath(locale)} className="plus-btn-ghost mt-8 w-full">
             {t.confirmation.backHome}
           </Link>
         </div>
