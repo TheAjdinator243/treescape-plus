@@ -29,7 +29,11 @@ export function LanguageSwitcher({ tone = 'light' }: { tone?: 'light' | 'dark' |
     if (!isLocale(next) || next === locale) return;
 
     rememberLocale(next);
-    startTransition(() => router.push(localePath(next, pathname)));
+
+    // `scroll: false` — gost ostaje tamo gdje je čitao. Ko na pola čestih
+    // pitanja prebaci na bosanski, hoće ta ista pitanja, a ne vrh stranice.
+    // (Ranije je ovo bio `router.refresh()`, koji skrol nije ni dirao.)
+    startTransition(() => router.push(localePath(next, pathname), { scroll: false }));
   }
 
   /**

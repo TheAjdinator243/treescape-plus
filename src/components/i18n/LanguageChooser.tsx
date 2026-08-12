@@ -11,6 +11,32 @@ import { rememberLocale } from './remember';
 const ROTATE_MS = 2400;
 
 /**
+ * Odlazak na odabrani jezik, bez klizanja na dno.
+ *
+ * ── Šta se ovdje desilo ───────────────────────────────────────────────────
+ * Poslije klika bi stranica sama otklizala do podnožja. Uzrok je slaganje
+ * troje, i nijedno samo za sebe nije greška:
+ *
+ * 1. `globals.css` drži `scroll-behavior: smooth` na <html>, pa je SVAKI skok
+ *    animiran.
+ * 2. `SmoothScroll` (Lenis) to privremeno vraća na `auto` — ali on živi u
+ *    rasporedu ispod `[locale]`, a ova stranica je IZNAD njega. Dok se bira
+ *    jezik, Lenisa još nema, pa `smooth` vrijedi.
+ * 3. Next.js poslije navigacije prolazi kroz elemente nove stranice i na
+ *    svakom zove `scrollIntoView()` — i to unatrag, od podnožja prema vrhu.
+ *
+ * Kad je `smooth` uključen, prvi od tih poziva (podnožje!) pokrene animirani
+ * skrol koji traje, a ostalih pet — koji bi završili na vrhu — ne stignu ga
+ * poništiti. Zato je stranica klizila tačno do podnožja.
+ *
+ * Zato `scroll={false}`: Next.js ne dira skrol, a vrh se namješta ovdje,
+ * odjednom. Bez `behavior: 'instant'` bi i ovaj skok bio animiran.
+ */
+function goToTop(): void {
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+/**
  * Izbor jezika — jedino što stoji na golom `/`.
  *
  * Svaki jezik ima svoju adresu (/bs, /en, /ar), pa je ovo raskrsnica, a ne
@@ -78,7 +104,11 @@ export function LanguageChooser({ suggested }: { suggested: Locale }) {
                 hrefLang={locale}
                 lang={locale}
                 dir={directionOf(locale)}
-                onClick={() => rememberLocale(locale)}
+                scroll={false}
+                onClick={() => {
+                  rememberLocale(locale);
+                  goToTop();
+                }}
                 className="block w-full rounded-2xl border border-forest-700 bg-forest-800 px-6 py-4 text-center text-lg font-medium text-sand-50 transition-colors hover:border-moss-400 hover:bg-forest-700 focus-visible:border-moss-400"
               >
                 {getStrings(locale).language.names[locale]}
