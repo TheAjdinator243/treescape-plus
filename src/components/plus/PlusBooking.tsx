@@ -171,7 +171,9 @@ export function PlusBooking({ context }: { context: BookingContext }) {
                     )}
 
                     {singleDay && (
-                      <p className="mt-4 plus-note px-4 py-3 text-xs leading-relaxed plus-total">
+                      // Bez `plus-total`: obje klase postavljaju boju, a
+                      // `plus-note` dolazi kasnije u stilu i ionako je nadjačava.
+                      <p className="mt-4 plus-note px-4 py-3 text-xs leading-relaxed">
                         {t.booking.singleDayNote}
                       </p>
                     )}

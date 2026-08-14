@@ -1799,10 +1799,20 @@ html[lang='ar'] body * {
   background-color: color-mix(in oklab, var(--ui-panel) 95%, transparent);
 }
 
+/*
+ * Napomena u okviru — npr. "Rezervacija za jedan dan, bez noćenja."
+ *
+ * Boja teksta MORA ići preko `--ui-total`, a ne preko `--color-pine-800`
+ * direktno. Podloga (`--ui-accent-soft`) se mijenja s kožom, a boja slova nije
+ * — pa je pod tamnom kožom tamnozeleni tekst stajao na tamnoj plohi i
+ * jednostavno se nije vidio.
+ *
+ * Pod svijetlom kožom `--ui-total` JESTE pine-800, pa se tamo ništa ne mijenja.
+ */
 .plus .plus-note {
   border-radius: var(--ui-radius-sm);
   background-color: var(--ui-accent-soft);
-  color: var(--color-pine-800);
+  color: var(--ui-total);
 }
 
 .plus .plus-alert {
@@ -1824,9 +1834,18 @@ html[lang='ar'] body * {
 .plus .plus-rail-ring {
   background-color: transparent;
 }
+/*
+ * Krug koraka koji tek dolazi.
+ *
+ * `--ui-bg`, a ne `--color-paper-50` direktno: u svijetloj koži je to ista
+ * boja, ali pod tamnom je tvrdo upisana bijela pravila punu bijelu tačku na
+ * tamnoj kartici — pa su koraci 2 i 3 svijetlili jače od onog na kojem gost
+ * zaista jeste. Aktivni krug uzima `--ui-accent-soft`, dakle tek nijansu
+ * svjetliju od podloge, i tako je izlazilo obrnuto od namjere.
+ */
 .plus .plus-rail-dot {
   border-color: var(--ui-line-soft);
-  background-color: var(--color-paper-50);
+  background-color: var(--ui-bg);
   color: var(--ui-dimmer);
 }
 .plus [data-state='active'] .plus-rail-dot {
