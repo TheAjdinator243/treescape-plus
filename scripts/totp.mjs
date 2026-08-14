@@ -25,6 +25,51 @@ const c = {
   cyan: (s) => `\x1b[36m${s}\x1b[0m`,
 };
 
+/**
+ * QR kod, nacrtan u terminalu.
+ *
+ * Ranije je ovdje pisalo "ovo je sadržaj QR koda" i ispisivala se `otpauth://`
+ * adresa — a QR se nikad nije crtao, pa se nije imalo šta skenirati. Ovo je
+ * jedini korak u cijelom podešavanju gdje se tajna prepisuje rukom, i najlakše
+ * ga je pogriješiti: trideset i dva znaka bez ijednog razmaka, a jedno krivo
+ * slovo se otkrije tek kad kod ne prođe.
+ *
+ * ── Dvije sitnice bez kojih se ovo ne skenira ─────────────────────────────
+ *
+ * 1. BOJE SE POSTAVLJAJU IZRIČITO. `qrcode-terminal` svijetle module crta kao
+ *    znakove (█ ▀ ▄), dakle bojom SLOVA — što je ispravno samo u terminalu s
+ *    tamnom podlogom. U svijetlom bi kod ispao u negativu, a čitači QR-a
+ *    negativ uglavnom ne prihvataju. Zato se svaki red umota u "bijelo na
+ *    crnom", pa polaritet ne zavisi od toga kakvu temu ko koristi.
+ *
+ * 2. NIVO ISPRAVKE 'M' umjesto podrazumijevanog 'L'. Za ovu dužinu adrese ne
+ *    košta nijedan stupac više (43×22 u oba slučaja), a kod podnosi više
+ *    smetnji — a skenira se s ekrana, kroz odsjaj i pod uglom.
+ */
+async function qrCode(text) {
+  let qrcode;
+
+  try {
+    ({ default: qrcode } = await import('qrcode-terminal'));
+  } catch {
+    return (
+      `   ${c.yellow('QR se ne može nacrtati — nedostaje qrcode-terminal.')}\n` +
+      `   ${c.dim('Pokreni `npm install`, ili unesi ključ ručno (ispod).')}\n`
+    );
+  }
+
+  qrcode.setErrorLevel('M');
+
+  // `generate` javlja rezultat kroz povratni poziv, ne kroz obećanje.
+  const art = await new Promise((resolve) => qrcode.generate(text, { small: true }, resolve));
+
+  return art
+    .split('\n')
+    .filter((line) => line.length)
+    .map((line) => `   \x1b[97;40m${line}\x1b[0m`)
+    .join('\n');
+}
+
 // ── Isti račun kao u src/lib/totp.ts ────────────────────────────────────────
 // Skripta se pokreće golim Node-om, bez TypeScripta, pa se ovih dvadesetak
 // redova ponavlja. Da se ikad raziđu, `totp.test.ts` bi to odmah pokazao —
@@ -128,10 +173,13 @@ console.log(`Treba ti aplikacija za provjeru — ${c.dim('Google Authenticator, 
 console.log(`${c.dim('iOS Lozinke, bilo koja.')}\n`);
 
 console.log(c.bold('1. Dodaj nalog u aplikaciju.\n'));
-console.log('   Ako aplikacija nudi "unesi ključ ručno", zalijepi ovo:\n');
+console.log('   Skeniraj ovo telefonom:\n');
+console.log(await qrCode(uri));
+console.log('\n   Ako aplikacija nudi "unesi ključ ručno", zalijepi ovo:\n');
 console.log(`      ${c.green(c.bold(grouped))}\n`);
 console.log(`   ${c.dim('Naziv: TreeScape · Tip: vremenski (TOTP) · 6 cifara · 30 sekundi')}\n`);
-console.log(`   ${c.dim('Ako radije skeniraš, ovo je sadržaj QR koda:')}`);
+console.log(`   ${c.dim('Upravljači lozinkama (1Password, Bitwarden) primaju i ovu adresu')}`);
+console.log(`   ${c.dim('zalijepljenu direktno:')}`);
 console.log(`   ${c.dim(uri)}\n`);
 
 // ── Provjera ────────────────────────────────────────────────────────────────

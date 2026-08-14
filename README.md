@@ -558,7 +558,8 @@ Time ukraden ili pogođen pristupni kod više nije dovoljan.
 npm run totp
 ```
 
-Skripta napravi tajnu, pokaže je u obliku koji aplikacija razumije i **odmah
+Skripta napravi tajnu, **iscrta QR kod u terminalu** da se skenira telefonom
+(ispod stoji i ključ za ručni unos, ako je aplikaciji tako lakše) i **odmah
 provjeri da se poklapa** — pa je tek onda upisuješ u `ADMIN_TOTP_SECRET`. Bez te
 provjere bi se greška vidjela tek pri prvoj prijavi na živom sajtu, kada je već
 kasno.
