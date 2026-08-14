@@ -925,6 +925,37 @@ html[lang='ar'] body * {
    */
   .plus-scene[data-scene='on'] {
     height: 200svh;
+
+    /*
+     * ── Zašto negativna margina ────────────────────────────────────────
+     * Skraćivanje staze iznad NIJE moglo ukloniti crnu prazninu, i to iz
+     * računice: prikovani kadar je visok jedan ekran, pa mu treba TAČNO
+     * jedan ekran skrola da ode s vidika, bez obzira koliko staza traje.
+     * Animacija završi (`--p` = 1) kad se kadar otkači, a poslije toga se
+     * cijeli jedan ekran skrola kroz gotov kadar.
+     *
+     * Dok je koža bila svijetla, taj kadar je na kraju bio boje papira, pa
+     * je "ispiranje" izgledalo kao namjeran prelaz. Pod `onyx` kožom je sve
+     * crno — i ispiranje, i siluete, i sljedeći odjeljak — pa se to isto
+     * čitalo kao ekran i po prazne crne plohe između fotografije i teksta.
+     *
+     * Zato se zadnji ekran staze PODVLAČI pod sljedeći odjeljak: on kreće
+     * tačno kad animacija završi i klizne preko gotovog kadra. Staza za
+     * `--p` ostaje ista (računa se iz visine odjeljka, koju margina ne
+     * dira), pa je sama animacija netaknuta — nestaje samo hod kroz crno.
+     */
+    margin-bottom: -100svh;
+  }
+
+  /*
+   * Sljedeći odjeljak se mora crtati PREKO prikovanog kadra.
+   *
+   * Bez ovoga bi ga `position: sticky` iz `.plus-scene-pin` prekrio — sticky
+   * sloj stoji iznad običnog sadržaja koji dolazi za njim.
+   */
+  .plus-scene[data-scene='on'] + * {
+    position: relative;
+    z-index: 1;
   }
 }
 
