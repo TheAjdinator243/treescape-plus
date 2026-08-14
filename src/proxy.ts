@@ -191,7 +191,17 @@ export const config = {
    * njih se ne izvršava ništa, a svaki suvišan prolazak kroz ovaj kod usporava
    * učitavanje.
    */
+  /*
+   * `opengraph-image` mora ostati IZUZET, i to nije kozmetika.
+   *
+   * Next.js sliku za pregled linka servira na jednoj jedinoj adresi, u
+   * korijenu (`/opengraph-image.jpg`), a jezične stranice u svoje zaglavlje
+   * upisuju baš nju. Da prolazi kroz ovaj kod, pravilo o jeziku bi je —
+   * kao adresu bez jezika — preusmjerilo na `/bs/opengraph-image.jpg`, gdje
+   * ničega nema. Instagram i WhatsApp bi tada opet pokazivali link bez slike,
+   * ovaj put s ispravnim zaglavljem, pa bi se uzrok teško našao.
+   */
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|sitemap.xml|images/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|sitemap.xml|opengraph-image|twitter-image|images/).*)',
   ],
 };
