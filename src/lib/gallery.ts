@@ -1,6 +1,5 @@
 import type { StaticImageData } from 'next/image';
 
-import slika01 from '@/assets/gallery/slika-01.jpg';
 import slika02 from '@/assets/gallery/slika-02.jpg';
 import slika03 from '@/assets/gallery/slika-03.jpg';
 import slika04 from '@/assets/gallery/slika-04.jpg';
@@ -13,25 +12,26 @@ import slika09 from '@/assets/gallery/slika-09.jpg';
 /**
  * ┌─────────────────────────────────────────────────────────────────────────┐
  * │  KAKO UBACITI PRAVE SLIKE TreeScape-a                                   │
- * │                                                                          │
- * │  Sve slike su trenutno prazni okviri s natpisom SLIKA 1, SLIKA 2…        │
- * │  Zamjena je jednostavna:                                                 │
- * │                                                                          │
- * │  1. Nazovi svoju sliku isto kao onu koju mijenjaš — npr. `slika-01.jpg`  │
- * │  2. Prebaci je u `src/assets/gallery/` i prepiši postojeću               │
- * │                                                                          │
- * │  Ništa drugo se ne dira. Next.js sam pravi WebP/AVIF verzije, računa     │
- * │  dimenzije i prikazuje zamućeni pregled dok se slika učitava.            │
- * │                                                                          │
- * │  SLIKA 1 je naslovna — ona velika preko cijelog ekrana na vrhu. Neka     │
- * │  bude široka (npr. 2000×1200) i najljepša koju imaš.                     │
+ * │                                                                         │
+ * │  Sve slike su trenutno prazni okviri s natpisom SLIKA 1, SLIKA 2…       │
+ * │  Zamjena je jednostavna:                                                │
+ * │                                                                         │
+ * │  1. Nazovi svoju sliku isto kao onu koju mijenjaš — npr. `slika-01.jpg` │
+ * │  2. Prebaci je u `src/assets/gallery/` i prepiši postojeću              │
+ * │                                                                         │
+ * │  Ništa drugo se ne dira. Next.js sam pravi WebP/AVIF verzije, računa    │
+ * │  dimenzije i prikazuje zamućeni pregled dok se slika učitava.           │
+ * │                                                                         │
+ * │  SLIKA 1 je naslovna — ona velika preko cijelog ekrana na vrhu. Neka    │
+ * │  bude široka (npr. 2000×1200) i najljepša koju imaš. Dok je ona prazan  │
+ * │  okvir, naslovnu privremeno drži SLIKA 4 — vidi `HERO_IMAGE` niže.      │
  * │  SLIKA 3 i SLIKA 6 su uspravne, ostale položene.                        │
- * │                                                                          │
- * │  OPISI: `alt` (za slijepe osobe i za Google) i natpis ispod slike više   │
- * │  ne stoje ovdje nego u rječnicima, u `src/lib/i18n/dictionaries/` pod    │
- * │  `gallery.itemAlt` i `gallery.itemCaption` — jer ih treba na sva tri     │
- * │  jezika. Dok stoje označene prazne slike, ispisuju samo redni broj;      │
- * │  kad ubaciš prave, tamo opiši šta se na svakoj vidi.                     │
+ * │                                                                         │
+ * │  OPISI: `alt` (za slijepe osobe i za Google) i natpis ispod slike više  │
+ * │  ne stoje ovdje nego u rječnicima, u `src/lib/i18n/dictionaries/` pod   │
+ * │  `gallery.itemAlt` i `gallery.itemCaption` — jer ih treba na sva tri    │
+ * │  jezika. Dok stoje označene prazne slike, ispisuju samo redni broj;     │
+ * │  kad ubaciš prave, tamo opiši šta se na svakoj vidi.                    │
  * └─────────────────────────────────────────────────────────────────────────┘
  */
 
@@ -43,8 +43,24 @@ export interface GalleryImage {
   span?: 'wide' | 'tall';
 }
 
-/** Velika slika na vrhu stranice. Opis stoji u rječniku (`hero.imageAlt`). */
-export const HERO_IMAGE = slika01;
+/**
+ * Velika slika na vrhu stranice. Opis stoji u rječniku (`hero.imageAlt`).
+ *
+ * PRIVREMENO stoji `slika04` umjesto `slika01`.
+ *
+ * Razlog: `slika-01.jpg` je još označeni prazan okvir, a naslovna je prvo što
+ * gost vidi — zeleni pravougaonik s natpisom "SLIKA 1" na tom mjestu košta
+ * više nego bilo koja prava fotografija. Od pravih je `slika04` jedina
+ * položena (1179×806), a naslovna se razvlači preko cijelog ekrana; uspravna
+ * bi se u tom okviru izrezala na usku traku.
+ *
+ * Kad stigne dronska snimka, tri koraka:
+ *   1. prebaci je preko `src/assets/gallery/slika-01.jpg`;
+ *   2. vrati `import slika01 from '@/assets/gallery/slika-01.jpg';` na vrh ove
+ *      datoteke (izbačen je jer bi inače stajao neiskorišten) i ovdje `slika01`;
+ *   3. vrati `hero.imageAlt` u sva tri rječnika na opis te slike.
+ */
+export const HERO_IMAGE = slika04;
 
 /** Slika uz tekst "O kući". Opis stoji u rječniku (`about.imageAlt`). */
 export const ABOUT_IMAGE = slika03;
