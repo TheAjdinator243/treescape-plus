@@ -49,7 +49,7 @@ export const en: Dictionary = {
     cta: 'Check availability',
     secondaryCta: 'See the house',
     scroll: 'Find out more',
-    imageAlt: 'TreeScape villa',
+    imageAlt: 'The pool and loungers under the evening lights',
     freeFrom: (date) => `First free date: ${date}`,
     freeToday: 'Free from today',
   },

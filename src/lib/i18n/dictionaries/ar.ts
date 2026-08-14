@@ -54,7 +54,7 @@ export const ar: Dictionary = {
     cta: 'تحقّق من التوفر',
     secondaryCta: 'شاهد المنزل',
     scroll: 'اعرف المزيد',
-    imageAlt: 'فيلا TreeScape',
+    imageAlt: 'المسبح وكراسي الاستلقاء تحت أضواء المساء',
     freeFrom: (date) => `أول موعد متاح: ${date}`,
     freeToday: 'متاح من اليوم',
   },

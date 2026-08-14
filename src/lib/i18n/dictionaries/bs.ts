@@ -54,7 +54,7 @@ export const bs: Dictionary = {
     cta: 'Provjeri dostupnost',
     secondaryCta: 'Pogledaj kuću',
     scroll: 'Saznaj više',
-    imageAlt: 'Vila TreeScape',
+    imageAlt: 'Bazen i ležaljke pod noćnim svjetlima',
     freeFrom: (date) => `Prvi slobodan termin: ${date}`,
     freeToday: 'Slobodno već danas',
   },
