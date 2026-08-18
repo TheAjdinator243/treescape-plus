@@ -12,19 +12,20 @@ import { useI18n } from '@/components/i18n/LocaleProvider';
  * ijedne naznake šta se iza nje krije. Kod se provjerava na serveru; ovdje
  * se nigdje ne čuva.
  *
+ * Gola, ali ne i tuđa. Boje su dolazile iz osnovne palete (`forest-900`,
+ * `sand-50`, `moss-400`) dok sajt odavno stoji na onyxu i mesingu, pa se
+ * ulaz otvarao u zelenom na crnoj kući. Sada sve boje idu preko IMENA
+ * POSLOVA — `plus-surface`, `plus-ink`, `plus-field` — a šta ta imena znače
+ * bira `data-skin` na omotaču, isto kao na sajtu. Presvuče li se sajt jednom
+ * riječju, presvuče se i ovo.
+ *
  * Oba polja stoje na ISTOM ekranu i šalju se odjednom, umjesto uobičajenog
  * "prvo lozinka, pa onda kod s telefona". Razlog je sigurnosni: drugi ekran
  * bi se pojavio samo kad je pristupni kod tačan, pa bi napadaču koji pogađa
  * potvrdio da je pogodio prvi faktor. Ovako jedan pogrešan unos ne odaje
  * ništa — a usput nema ni međusesije koju bi trebalo zasebno čuvati.
  */
-export function AdminGate({
-  configured,
-  twoFactor,
-}: {
-  configured: boolean;
-  twoFactor: boolean;
-}) {
+export function AdminGate({ configured, twoFactor }: { configured: boolean; twoFactor: boolean }) {
   const { t } = useI18n();
   const router = useRouter();
   const [code, setCode] = useState('');
@@ -65,13 +66,13 @@ export function AdminGate({
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-forest-900 px-5">
+    <main className="plus-surface flex min-h-dvh items-center justify-center px-5">
       <div className="w-full max-w-sm">
-        <h1 className="font-display text-2xl text-sand-50">{t.admin.gateTitle}</h1>
-        <p className="mt-2 text-sm text-moss-300/80">{t.admin.gateLead}</p>
+        <h1 className="plus-ink text-2xl">{t.admin.gateTitle}</h1>
+        <p className="plus-dim mt-2 text-sm">{t.admin.gateLead}</p>
 
         {!configured ? (
-          <p className="mt-6 rounded-xl border border-warn-600/30 bg-warn-600/10 px-4 py-3 text-sm leading-relaxed text-warn-600">
+          <p className="plus-warn mt-6 px-4 py-3 text-sm leading-relaxed">
             {t.admin.gateNotConfigured}
           </p>
         ) : (
@@ -88,7 +89,7 @@ export function AdminGate({
               autoFocus
               disabled={busy}
               placeholder="••••••••••••"
-              className="w-full rounded-xl border border-forest-700 bg-forest-800 px-4 py-3 text-center font-mono tracking-widest text-sand-50 placeholder:text-forest-600 focus:border-moss-400 focus:outline-none focus:ring-2 focus:ring-moss-400/30"
+              className="plus-field text-center font-mono tracking-widest"
             />
 
             {twoFactor && (
@@ -111,24 +112,24 @@ export function AdminGate({
                   disabled={busy}
                   placeholder="000000"
                   dir="ltr"
-                  className="w-full rounded-xl border border-forest-700 bg-forest-800 px-4 py-3 text-center font-mono text-lg tracking-[0.4em] text-sand-50 placeholder:text-forest-600 focus:border-moss-400 focus:outline-none focus:ring-2 focus:ring-moss-400/30"
+                  className="plus-field text-center font-mono text-lg tracking-[0.4em]"
                 />
-                <p className="mt-2 text-center text-xs text-moss-300/70">
-                  {t.admin.gateTotpHint}
-                </p>
+                <p className="plus-dimmer mt-2 text-center text-xs">{t.admin.gateTotpHint}</p>
               </div>
             )}
 
             {error && (
-              <p role="alert" className="mt-3 text-center text-sm text-ember-400">
+              <p role="alert" className="plus-danger mt-3 text-center text-sm">
                 {error}
               </p>
             )}
 
             <button
               type="submit"
-              disabled={busy || code.length === 0 || (twoFactor && totp.replace(/\D/g, '').length !== 6)}
-              className="btn mt-4 w-full bg-moss-400 text-forest-900 hover:bg-moss-300"
+              disabled={
+                busy || code.length === 0 || (twoFactor && totp.replace(/\D/g, '').length !== 6)
+              }
+              className="plus-btn-accent mt-4 w-full"
             >
               {busy ? t.common.loading : t.admin.gateSubmit}
             </button>

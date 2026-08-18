@@ -227,7 +227,6 @@
   }
 }
 
-
 /*
  * Šara ne smije ići do samog ruba: gore i dolje se stapa s tamnim susjedima,
  * pa ploha izgleda kao da je uronjena u stranicu, a ne zalijepljena na nju.
@@ -663,9 +662,7 @@ html[lang='ar'] body * {
   .section-lead {
     @apply mt-4 max-w-2xl text-lg leading-relaxed text-ink-500;
   }
-
 }
-
 
 /* ── Kalendar (react-day-picker) ─────────────────────────────────────────── */
 
@@ -1668,6 +1665,16 @@ html[lang='ar'] body * {
   --ui-link: var(--color-clay-500);
   --ui-link-hover: var(--color-clay-600);
 
+  /*
+   * Stanja. Stoje ovdje, uz ostala imena poslova, iz istog razloga kao i sve
+   * ostalo: administracija ih je pisala direktno (`text-danger-600`), pa je
+   * pod tamnom kožom crvena na crnom ispala 3,45:1 — vidljiva na laptopu u
+   * mraku, a nestala na telefonu vani.
+   */
+  --ui-warn: var(--color-warn-600);
+  --ui-danger: var(--color-danger-600);
+  --ui-success: var(--color-success-600);
+
   --ui-radius: var(--radius-panel);
   --ui-radius-sm: 0.75rem;
 }
@@ -1816,10 +1823,129 @@ html[lang='ar'] body * {
 }
 
 .plus .plus-alert {
-  border: 1px solid color-mix(in oklab, var(--color-danger-600) 25%, transparent);
+  border: 1px solid color-mix(in oklab, var(--ui-danger) 25%, transparent);
   border-radius: var(--ui-radius-sm);
-  background-color: color-mix(in oklab, var(--color-danger-600) 5%, transparent);
-  color: var(--color-danger-600);
+  background-color: color-mix(in oklab, var(--ui-danger) 5%, transparent);
+  color: var(--ui-danger);
+}
+
+/*
+ * Stanja kao boja teksta, i kao okvir.
+ *
+ * Tri para umjesto tri boje: administracija ih koristi i za jednu rečenicu
+ * greške i za cijelu napomenu u okviru, a te dvije stvari se razlikuju samo
+ * po tome ima li okvir.
+ */
+.plus .plus-danger {
+  color: var(--ui-danger);
+}
+.plus .plus-warn-ink {
+  color: var(--ui-warn);
+}
+.plus .plus-success-ink {
+  color: var(--ui-success);
+}
+
+.plus .plus-warn {
+  border: 1px solid color-mix(in oklab, var(--ui-warn) 30%, transparent);
+  border-radius: var(--ui-radius-sm);
+  background-color: color-mix(in oklab, var(--ui-warn) 10%, transparent);
+  color: var(--ui-warn);
+}
+
+.plus .plus-success {
+  border: 1px solid color-mix(in oklab, var(--ui-success) 30%, transparent);
+  border-radius: var(--ui-radius-sm);
+  background-color: color-mix(in oklab, var(--ui-success) 10%, transparent);
+  color: var(--ui-success);
+}
+
+/*
+ * Oznaka stanja rezervacije.
+ *
+ * Jedna klasa po stanju umjesto para "pozadina + slovo", jer su to dvije
+ * strane iste odluke i razdvojene su se razilazile: `bg-ink-500/12` je ostalo
+ * na osnovnoj paleti i pod tamnom kožom davalo svijetlu mrlju na crnom.
+ */
+.plus .plus-tone-ok {
+  background-color: color-mix(in oklab, var(--ui-success) 16%, transparent);
+  color: var(--ui-success);
+}
+.plus .plus-tone-wait {
+  background-color: color-mix(in oklab, var(--ui-warn) 16%, transparent);
+  color: var(--ui-warn);
+}
+.plus .plus-tone-bad {
+  background-color: color-mix(in oklab, var(--ui-danger) 14%, transparent);
+  color: var(--ui-danger);
+}
+.plus .plus-tone-mute {
+  background-color: color-mix(in oklab, var(--ui-ink) 12%, transparent);
+  color: var(--ui-ink);
+}
+.plus .plus-tone-quiet {
+  background-color: color-mix(in oklab, var(--ui-ink) 8%, transparent);
+  color: var(--ui-dim);
+}
+
+/*
+ * Polje za unos, presvučeno kožom.
+ *
+ * `.plus-field` je bio pisan za svijetlu kožu i to doslovno: `bg-white`,
+ * `border-paper-300`, `text-pine-900`, `rounded-xl`. Na sajtu se to nikad nije
+ * vidjelo jer ga sajt i ne koristi — obrazac za rezervaciju ima svoj
+ * `plus-live-*` s plutajućom oznakom. Administracija ga koristi četrnaest
+ * puta, pa su pod onyxom sva polja bila bijele zaobljene pilule na crnom.
+ *
+ * Sve boje sada idu preko `--ui-*`, kao i sve ostalo, a i poluprečnik: pod
+ * onyxom je `--ui-radius-sm` nula, jer su oštre ivice pola tog izgleda.
+ */
+.plus .plus-field {
+  border-radius: var(--ui-radius-sm);
+  border-color: var(--ui-line-soft);
+  background-color: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.plus .plus-field::placeholder {
+  color: var(--ui-dimmer);
+}
+
+.plus .plus-field:focus {
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ui-accent) 18%, transparent);
+}
+
+.plus .plus-field:disabled {
+  background-color: var(--ui-bg-alt);
+  color: var(--ui-dimmer);
+}
+
+/*
+ * Preglednik crta svoje.
+ *
+ * Kalendar i sat koje otvara `type="date"` i `type="time"`, traka za skrol i
+ * strelice brojčanog polja crta sam preglednik i ne zna ništa o ovim bojama.
+ * Bez ove jedne riječi ostaju bijeli — na crnoj plohi bljesne bijeli kalendar
+ * preko pola ekrana.
+ */
+.plus[data-skin='onyx'] {
+  color-scheme: dark;
+}
+
+/* Ivica koja nosi naglasak — aktivni jezičak u administraciji. */
+.plus .plus-rule-accent {
+  border-color: var(--ui-accent);
+}
+
+/*
+ * Posvjetljivanje pri prelazu mišem, kao ime posla.
+ *
+ * Tailwindov `hover:` ne može uključiti ovakvu klasu, a `hover:text-ink-900`
+ * je vraćalo boju osnovne palete usred tamne kože.
+ */
+.plus .plus-hover-ink:hover {
+  color: var(--ui-ink);
 }
 
 /* Traka napretka */
@@ -1989,11 +2115,21 @@ html[lang='ar'] body * {
 
   --ui-ink: var(--color-ivory-50);
   --ui-dim: var(--color-ivory-400);
-  --ui-dimmer: var(--color-ivory-500);
+  /*
+   * Najslabiji dozvoljeni tekst, i vrijednost mu je mjerena a ne birana.
+   *
+   * `ivory-500` na plohi kartice (`onyx-900`) daje tačno 4,50:1 — dakle na
+   * samoj granici, i to samo ako se zaokruži naviše. Zaglavlja tabela,
+   * napomene ispod polja i "(nije uključeno)" su sve pisani ovom bojom, pa je
+   * pola sitnog teksta u administraciji stajalo na pragu. Razblaženo prema
+   * slonovači dok ne dođe na 5,5:1, što je razlika između "vidi se na laptopu
+   * u mraku" i "vidi se".
+   */
+  --ui-dimmer: color-mix(in oklab, var(--color-ivory-500) 74%, var(--color-ivory-50));
 
   --ui-ink-on: var(--color-ivory-50);
   --ui-dim-on: var(--color-ivory-400);
-  --ui-dimmer-on: var(--color-ivory-500);
+  --ui-dimmer-on: color-mix(in oklab, var(--color-ivory-500) 74%, var(--color-ivory-50));
 
   --ui-accent: var(--color-brass-400);
   --ui-accent-strong: var(--color-brass-400);
@@ -2004,6 +2140,23 @@ html[lang='ar'] body * {
   --ui-total: var(--color-brass-300);
   --ui-link: var(--color-brass-400);
   --ui-link-hover: var(--color-brass-300);
+
+  /*
+   * Amber i zelena prolaze na crnom i ostaju kakve jesu; crvena ne. Mjereno:
+   * danger-600 na onyx-950 daje 3,45:1, ispod praga za obični tekst. Ovdje je
+   * razblažena prema slonovači dok ne prijeđe 4,5:1 — a ostaje crvena, jer
+   * boja stanja koja se pomjeri prema naglasku prestaje biti stanje.
+   */
+  --ui-danger: color-mix(in oklab, var(--color-danger-600) 58%, var(--color-ivory-50));
+
+  /*
+   * Amber i zelena isto, i iz istog razloga. Amber sam po sebi prolazi na
+   * crnom (5,4:1), ali oznaka stanja ga stavlja na podlogu od 16% sebe samog —
+   * a to podigne plohu, ne slovo. Mjereno: "Awaiting approval" 4,22:1,
+   * "Confirmed" 3,18:1. Zelena je najtamnija od tri, pa joj treba najviše.
+   */
+  --ui-warn: color-mix(in oklab, var(--color-warn-600) 70%, var(--color-ivory-50));
+  --ui-success: color-mix(in oklab, var(--color-success-600) 52%, var(--color-ivory-50));
 
   /* Oštre ivice su pola ovog izgleda. Zaobljenja se ne smanjuju nego gase. */
   --ui-radius: 0;
@@ -2211,7 +2364,6 @@ html[lang='ar'] body * {
 [data-skin='onyx'] .stay-legend [data-tone='selected'] {
   background-color: var(--color-brass-400);
 }
-
 
 /* ── Stranica potvrde ────────────────────────────────────────────────────
  *

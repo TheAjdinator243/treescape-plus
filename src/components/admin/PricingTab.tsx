@@ -114,10 +114,10 @@ export function PricingTab({
     <div className="space-y-14">
       {/* ── Osnovne cijene ── */}
       <section>
-        <h2 className="font-display text-2xl text-forest-900">{t.admin.pricingHeading}</h2>
-        <p className="mt-2 max-w-2xl text-sm text-ink-500">{t.admin.pricingLead}</p>
+        <h2 className="text-2xl plus-ink">{t.admin.pricingHeading}</h2>
+        <p className="mt-2 max-w-2xl text-sm plus-dim">{t.admin.pricingLead}</p>
 
-        <form onSubmit={saveSettings} className="card mt-6 grid gap-5 p-6 sm:grid-cols-2">
+        <form onSubmit={saveSettings} className="plus-card mt-6 grid gap-5 p-6 sm:grid-cols-2">
           <Num
             id="default_nightly"
             label={`${t.admin.defaultNightly} (${settings.currency_symbol})`}
@@ -133,11 +133,21 @@ export function PricingTab({
               onChange={set('weekend_price')}
               step="0.01"
             />
-            <p className="mt-1.5 text-xs text-ink-400">{t.admin.weekendPriceHint}</p>
+            <p className="mt-1.5 text-xs plus-dimmer">{t.admin.weekendPriceHint}</p>
           </div>
 
-          <Num id="max_nights" label={t.admin.maxNights} value={form.max_nights} onChange={set('max_nights')} />
-          <Num id="max_guests" label={t.admin.maxGuests} value={form.max_guests} onChange={set('max_guests')} />
+          <Num
+            id="max_nights"
+            label={t.admin.maxNights}
+            value={form.max_nights}
+            onChange={set('max_nights')}
+          />
+          <Num
+            id="max_guests"
+            label={t.admin.maxGuests}
+            value={form.max_guests}
+            onChange={set('max_guests')}
+          />
           <Num
             id="hold_minutes"
             label={t.admin.holdMinutes}
@@ -146,7 +156,7 @@ export function PricingTab({
           />
 
           <div>
-            <label htmlFor="checkin_time" className="field-label">
+            <label htmlFor="checkin_time" className="plus-label">
               {t.admin.checkinFrom}
             </label>
             <input
@@ -154,11 +164,11 @@ export function PricingTab({
               type="time"
               value={form.checkin_time}
               onChange={set('checkin_time')}
-              className="field-input"
+              className="plus-field"
             />
           </div>
           <div>
-            <label htmlFor="checkout_time" className="field-label">
+            <label htmlFor="checkout_time" className="plus-label">
               {t.admin.checkoutBy}
             </label>
             <input
@@ -166,12 +176,12 @@ export function PricingTab({
               type="time"
               value={form.checkout_time}
               onChange={set('checkout_time')}
-              className="field-input"
+              className="plus-field"
             />
           </div>
 
           <div>
-            <label htmlFor="currency" className="field-label">
+            <label htmlFor="currency" className="plus-label">
               {t.admin.currency}
             </label>
             <input
@@ -180,11 +190,11 @@ export function PricingTab({
               maxLength={3}
               value={form.currency}
               onChange={set('currency')}
-              className="field-input uppercase"
+              className="plus-field uppercase"
             />
           </div>
           <div>
-            <label htmlFor="currency_symbol" className="field-label">
+            <label htmlFor="currency_symbol" className="plus-label">
               {t.admin.currencySymbol}
             </label>
             <input
@@ -193,34 +203,32 @@ export function PricingTab({
               maxLength={5}
               value={form.currency_symbol}
               onChange={set('currency_symbol')}
-              className="field-input"
+              className="plus-field"
             />
           </div>
 
           <div className="flex items-center gap-4 sm:col-span-2">
-            <button type="submit" className="btn-primary px-6 py-2.5 text-xs">
+            <button type="submit" className="plus-btn-primary px-6 py-2.5 text-xs">
               {t.admin.save}
             </button>
-            {saved && <span className="text-sm text-success-600">{t.admin.saved}</span>}
+            {saved && <span className="text-sm plus-success-ink">{t.admin.saved}</span>}
           </div>
         </form>
       </section>
 
       {/* ── Sezone ── */}
       <section>
-        <h2 className="font-display text-2xl text-forest-900">{t.admin.seasonsHeading}</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-500">
-          {t.admin.seasonsLead}
-        </p>
+        <h2 className="text-2xl plus-ink">{t.admin.seasonsHeading}</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed plus-dim">{t.admin.seasonsLead}</p>
 
         {periods.length === 0 ? (
-          <p className="mt-6 rounded-2xl border border-dashed border-sand-300 px-6 py-10 text-center text-sm text-ink-400">
+          <p className="mt-6 rounded-2xl border border-dashed plus-rule px-6 py-10 text-center text-sm plus-dimmer">
             {t.admin.seasonsEmpty}
           </p>
         ) : (
-          <div className="card mt-6 overflow-x-auto">
+          <div className="plus-card mt-6 overflow-x-auto">
             <table className="w-full min-w-[640px] text-start text-sm">
-              <thead className="border-b border-sand-200 text-xs uppercase tracking-wider text-ink-400">
+              <thead className="border-b plus-rule text-xs uppercase tracking-wider plus-dimmer">
                 <tr>
                   <th className="px-5 py-3 font-medium">{t.admin.seasonName}</th>
                   <th className="px-5 py-3 font-medium">{t.admin.seasonPeriod}</th>
@@ -229,23 +237,23 @@ export function PricingTab({
                   <th className="px-5 py-3" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-sand-200">
+              <tbody className="plus-divide divide-y">
                 {periods.map((period) => (
                   <tr key={period.id}>
-                    <td className="px-5 py-3.5 font-medium text-ink-900">{period.name}</td>
-                    <td className="px-5 py-3.5 text-ink-500">
+                    <td className="px-5 py-3.5 font-medium plus-ink">{period.name}</td>
+                    <td className="px-5 py-3.5 plus-dim">
                       {formatNumeric(period.start_date, locale)} –{' '}
                       {formatNumeric(period.end_date, locale)}
                     </td>
-                    <td className="px-5 py-3.5 text-end tabular-nums text-ink-900">
+                    <td className="px-5 py-3.5 text-end tabular-nums plus-ink">
                       {formatMoney(period.nightly_price_cents, settings.currency_symbol, locale)}
                     </td>
-                    <td className="px-5 py-3.5 text-end text-ink-500">{period.priority}</td>
+                    <td className="px-5 py-3.5 text-end plus-dim">{period.priority}</td>
                     <td className="px-5 py-3.5 text-end">
                       <button
                         type="button"
                         onClick={() => void removeSeason(period.id)}
-                        className="text-xs font-medium text-danger-600 underline underline-offset-4"
+                        className="text-xs font-medium plus-danger underline underline-offset-4"
                       >
                         {t.admin.seasonDelete}
                       </button>
@@ -257,9 +265,9 @@ export function PricingTab({
           </div>
         )}
 
-        <form onSubmit={addSeason} className="card mt-6 grid gap-4 p-6 lg:grid-cols-3">
+        <form onSubmit={addSeason} className="plus-card mt-6 grid gap-4 p-6 lg:grid-cols-3">
           <div className="lg:col-span-3">
-            <label htmlFor="season-name" className="field-label">
+            <label htmlFor="season-name" className="plus-label">
               {t.admin.seasonName}
             </label>
             <input
@@ -269,12 +277,12 @@ export function PricingTab({
               value={season.name}
               onChange={(e) => setSeason((s) => ({ ...s, name: e.target.value }))}
               placeholder={t.admin.seasonNamePlaceholder}
-              className="field-input"
+              className="plus-field"
             />
           </div>
 
           <div>
-            <label htmlFor="season-start" className="field-label">
+            <label htmlFor="season-start" className="plus-label">
               {t.admin.seasonFrom}
             </label>
             <input
@@ -283,13 +291,13 @@ export function PricingTab({
               required
               value={season.start_date}
               onChange={(e) => setSeason((s) => ({ ...s, start_date: e.target.value }))}
-              className="field-input"
+              className="plus-field"
             />
           </div>
           <div>
-            <label htmlFor="season-end" className="field-label">
+            <label htmlFor="season-end" className="plus-label">
               {t.admin.seasonTo}{' '}
-              <span className="font-normal text-ink-400">({t.admin.seasonToHint})</span>
+              <span className="font-normal plus-dimmer">({t.admin.seasonToHint})</span>
             </label>
             <input
               id="season-end"
@@ -298,11 +306,11 @@ export function PricingTab({
               min={season.start_date || todayStr()}
               value={season.end_date}
               onChange={(e) => setSeason((s) => ({ ...s, end_date: e.target.value }))}
-              className="field-input"
+              className="plus-field"
             />
           </div>
           <div>
-            <label htmlFor="season-price" className="field-label">
+            <label htmlFor="season-price" className="plus-label">
               {t.admin.seasonPrice} ({settings.currency_symbol})
             </label>
             <input
@@ -313,12 +321,12 @@ export function PricingTab({
               step="0.01"
               value={season.price}
               onChange={(e) => setSeason((s) => ({ ...s, price: e.target.value }))}
-              className="field-input"
+              className="plus-field"
             />
           </div>
 
           <div>
-            <label htmlFor="season-priority" className="field-label">
+            <label htmlFor="season-priority" className="plus-label">
               {t.admin.seasonPriority}
             </label>
             <input
@@ -328,11 +336,11 @@ export function PricingTab({
               min="0"
               value={season.priority}
               onChange={(e) => setSeason((s) => ({ ...s, priority: e.target.value }))}
-              className="field-input"
+              className="plus-field"
             />
           </div>
           <div className="flex items-end">
-            <button type="submit" className="btn-primary w-full py-2.5 text-xs">
+            <button type="submit" className="plus-btn-primary w-full py-2.5 text-xs">
               {t.admin.seasonAdd}
             </button>
           </div>
@@ -357,7 +365,7 @@ function Num({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="field-label">
+      <label htmlFor={id} className="plus-label">
         {label}
       </label>
       <input
@@ -368,7 +376,7 @@ function Num({
         step={step ?? '1'}
         value={value}
         onChange={onChange}
-        className="field-input"
+        className="plus-field"
       />
     </div>
   );

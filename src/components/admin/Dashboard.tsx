@@ -62,12 +62,17 @@ function BookingSearch({
 
       <div className="relative">
         <span
-          className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 text-ink-400"
+          className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 plus-dimmer"
           aria-hidden="true"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
-            <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <path
+              d="m20 20-3.5-3.5"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
           </svg>
         </span>
 
@@ -79,14 +84,14 @@ function BookingSearch({
           placeholder={t.admin.searchPlaceholder}
           enterKeyHint="search"
           autoComplete="off"
-          className="field-input ps-10"
+          className="plus-field ps-10"
         />
 
         {query && (
           <button
             type="button"
             onClick={() => onChange('')}
-            className="absolute inset-y-0 end-0 flex items-center pe-3.5 text-ink-400 hover:text-ink-700"
+            className="plus-hover-ink absolute inset-y-0 end-0 flex items-center pe-3.5 plus-dimmer"
             aria-label={t.admin.searchClear}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -102,7 +107,7 @@ function BookingSearch({
       </div>
 
       {/* `aria-live` da čitač ekrana pročita broj rezultata bez pomjeranja fokusa. */}
-      <p className="mt-2 text-xs text-ink-400" aria-live="polite">
+      <p className="mt-2 text-xs plus-dimmer" aria-live="polite">
         {query ? t.admin.searchCount(found, total) : null}
       </p>
     </div>
@@ -128,14 +133,14 @@ function Contact({
   if (!email && !phone) return null;
 
   return (
-    <p className={`mt-1 text-ink-500 ${className}`}>
+    <p className={`mt-1 plus-dim ${className}`}>
       {phone && (
         // Razmaci u broju su za oko, ne za pozivanje — `tel:` ih ne voli.
         <a href={`tel:${phone.replace(/\s+/g, '')}`} className="underline underline-offset-2">
           {phone}
         </a>
       )}
-      {phone && email && <span className="text-ink-300"> · </span>}
+      {phone && email && <span className="plus-dimmer"> · </span>}
       {email && (
         <a href={`mailto:${email}`} className="break-all underline underline-offset-2">
           {email}
@@ -157,7 +162,7 @@ function Contact({
  */
 function Reference({ token }: { token: string }) {
   return (
-    <span dir="ltr" className="select-all font-mono text-xs tracking-wider text-ink-500">
+    <span dir="ltr" className="select-all font-mono text-xs tracking-wider plus-dim">
       {bookingReference(token)}
     </span>
   );
@@ -291,17 +296,22 @@ export function Dashboard({
   ];
 
   return (
-    <main className="min-h-dvh bg-sand-50">
-      <header className="border-b border-sand-200 bg-white">
+    <main className="plus-surface min-h-dvh">
+      <header className="plus-bar plus-rule border-b">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4 sm:px-8">
           <div>
-            <p className="font-display text-lg text-forest-900">{t.site.name}</p>
-            <p className="text-xs text-ink-400">{t.admin.title}</p>
+            {/* Ime kuće nosi pismo kože, kao i na sajtu. `.plus h1,h2,h3`
+                dohvata samo naslove, a ovo je odlomak — bez ovoga je ostajalo
+                u Manropeu dok sve ostalo naslovno stoji u Instrumentu. */}
+            <p className="plus-ink font-[family-name:var(--font-plus-display)] text-lg">
+              {t.site.name}
+            </p>
+            <p className="plus-dimmer text-xs">{t.admin.title}</p>
           </div>
           <button
             type="button"
             onClick={() => void logout()}
-            className="btn-ghost px-4 py-2 text-xs"
+            className="plus-btn-ghost px-4 py-2 text-xs"
           >
             {t.admin.logout}
           </button>
@@ -315,13 +325,13 @@ export function Dashboard({
               onClick={() => setTab(item.id)}
               className={`-mb-px shrink-0 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                 tab === item.id
-                  ? 'border-forest-700 text-forest-800'
-                  : 'border-transparent text-ink-500 hover:text-ink-900'
+                  ? 'plus-rule-accent plus-ink'
+                  : 'plus-hover-ink border-transparent plus-dim'
               }`}
             >
               {item.label}
               {item.badge ? (
-                <span className="ms-2 rounded-full bg-ember-500 px-2 py-0.5 text-xs font-semibold text-white">
+                <span className="plus-badge ms-2 rounded-full px-2 py-0.5 text-xs font-semibold">
                   {item.badge}
                 </span>
               ) : null}
@@ -332,19 +342,13 @@ export function Dashboard({
 
       <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
         {error && (
-          <p
-            role="alert"
-            className="mb-6 rounded-xl border border-danger-600/25 bg-danger-600/5 px-4 py-3 text-sm text-danger-600"
-          >
+          <p role="alert" className="plus-alert mb-6 px-4 py-3 text-sm">
             {error}
           </p>
         )}
 
         {notice && (
-          <p
-            role="status"
-            className="mb-6 rounded-xl border border-success-600/25 bg-success-600/5 px-4 py-3 text-sm text-success-600"
-          >
+          <p role="status" className="plus-success mb-6 px-4 py-3 text-sm">
             {notice}
           </p>
         )}
@@ -357,14 +361,14 @@ export function Dashboard({
                   <button
                     type="button"
                     onClick={() => void testNotification()}
-                    className="btn-ghost px-4 py-2 text-xs"
+                    className="plus-btn-ghost px-4 py-2 text-xs"
                   >
                     {t.admin.testNotification}
                   </button>
                   <button
                     type="button"
                     onClick={() => void testNotification('mail')}
-                    className="btn-ghost px-4 py-2 text-xs"
+                    className="plus-btn-ghost px-4 py-2 text-xs"
                   >
                     {t.admin.testGuestEmail}
                   </button>
@@ -374,13 +378,13 @@ export function Dashboard({
                 ) : (
                   <ul className="space-y-4">
                     {requests.map((booking) => (
-                      <li key={booking.id} className="card p-5">
+                      <li key={booking.id} className="plus-card p-5">
                         <div className="flex flex-wrap items-start justify-between gap-4">
                           <div className="min-w-0">
-                            <p className="font-display text-lg text-forest-900">
+                            <p className="text-lg plus-ink">
                               {formatRange(booking.start_date, booking.end_date, locale)}
                             </p>
-                            <p className="mt-1 text-sm text-ink-700">
+                            <p className="mt-1 text-sm plus-ink">
                               {booking.guest_name} ·{' '}
                               {count(locale, booking.guests ?? 1, t.common.guests)}
                             </p>
@@ -389,39 +393,37 @@ export function Dashboard({
                               phone={booking.guest_phone}
                               className="text-sm"
                             />
-                            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-400">
+                            <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs plus-dimmer">
                               <span>
                                 {t.admin.receivedAt(formatDateTime(booking.created_at, locale))}
                               </span>
                               <Reference token={booking.booking_public_link} />
                             </p>
                             {booking.note && (
-                              <p className="mt-3 rounded-lg bg-sand-100 px-3 py-2 text-sm text-ink-700">
-                                {booking.note}
-                              </p>
+                              <p className="plus-note mt-3 px-3 py-2 text-sm">{booking.note}</p>
                             )}
                           </div>
 
                           <div className="text-end">
-                            <p className="font-display text-2xl text-forest-800">
+                            <p className="text-2xl plus-ink">
                               {formatMoney(booking.total_cents, settings.currency_symbol, locale)}
                             </p>
-                            <p className="text-xs text-ink-400">{t.admin.byCash}</p>
+                            <p className="text-xs plus-dimmer">{t.admin.byCash}</p>
                           </div>
                         </div>
 
-                        <div className="mt-5 flex gap-3 border-t border-sand-200 pt-4">
+                        <div className="mt-5 flex gap-3 border-t plus-rule pt-4">
                           <button
                             type="button"
                             onClick={() => void decide(booking.id, 'approve')}
-                            className="btn-primary flex-1 py-2.5 text-xs"
+                            className="plus-btn-primary flex-1 py-2.5 text-xs"
                           >
                             {t.admin.approve}
                           </button>
                           <button
                             type="button"
                             onClick={() => void decide(booking.id, 'reject')}
-                            className="btn-ghost flex-1 py-2.5 text-xs"
+                            className="plus-btn-ghost flex-1 py-2.5 text-xs"
                           >
                             {t.admin.reject}
                           </button>
@@ -459,10 +461,10 @@ export function Dashboard({
                   */}
                   <ul className={vidljive.length === 0 ? 'hidden' : 'space-y-3 sm:hidden'}>
                     {vidljive.map((booking) => (
-                      <li key={booking.id} className="card p-4">
+                      <li key={booking.id} className="plus-card p-4">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="font-medium text-ink-900">
+                            <p className="font-medium plus-ink">
                               {formatRange(booking.start_date, booking.end_date, locale)}
                             </p>
                             <Reference token={booking.booking_public_link} />
@@ -470,9 +472,9 @@ export function Dashboard({
                           <StatusBadge status={booking.status} />
                         </div>
 
-                        <p className="mt-2 text-sm text-ink-700">
+                        <p className="mt-2 text-sm plus-ink">
                           {booking.guest_name ?? (
-                            <span className="text-ink-400">{booking.admin_note ?? '—'}</span>
+                            <span className="plus-dimmer">{booking.admin_note ?? '—'}</span>
                           )}
                         </p>
                         <Contact
@@ -481,11 +483,11 @@ export function Dashboard({
                           className="text-sm"
                         />
 
-                        <div className="mt-3 flex items-center justify-between border-t border-sand-200 pt-3 text-sm">
-                          <span className="text-ink-500">
+                        <div className="mt-3 flex items-center justify-between border-t plus-rule pt-3 text-sm">
+                          <span className="plus-dim">
                             {t.admin.methodLabels[booking.payment_method]}
                           </span>
-                          <span className="tabular-nums text-ink-900">
+                          <span className="tabular-nums plus-ink">
                             {booking.total_cents > 0
                               ? formatMoney(booking.total_cents, settings.currency_symbol, locale)
                               : '—'}
@@ -496,7 +498,7 @@ export function Dashboard({
                           <button
                             type="button"
                             onClick={() => void cancel(booking.id, t.admin.cancelConfirm)}
-                            className="mt-3 text-xs font-medium text-danger-600 underline underline-offset-4"
+                            className="mt-3 text-xs font-medium plus-danger underline underline-offset-4"
                           >
                             {t.admin.cancel}
                           </button>
@@ -507,11 +509,11 @@ export function Dashboard({
 
                   <div
                     className={
-                      vidljive.length === 0 ? 'hidden' : 'card hidden overflow-x-auto sm:block'
+                      vidljive.length === 0 ? 'hidden' : 'plus-card hidden overflow-x-auto sm:block'
                     }
                   >
                     <table className="w-full min-w-[720px] text-start text-sm">
-                      <thead className="border-b border-sand-200 text-xs uppercase tracking-wider text-ink-400">
+                      <thead className="border-b plus-rule text-xs uppercase tracking-wider plus-dimmer">
                         <tr>
                           <th className="px-5 py-3 font-medium">{t.admin.colStay}</th>
                           <th className="px-5 py-3 font-medium">{t.admin.colGuest}</th>
@@ -521,29 +523,29 @@ export function Dashboard({
                           <th className="px-5 py-3" />
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-sand-200">
+                      <tbody className="plus-divide divide-y">
                         {vidljive.map((booking) => (
                           <tr key={booking.id}>
-                            <td className="px-5 py-3.5 text-ink-900">
+                            <td className="px-5 py-3.5 plus-ink">
                               <span className="font-medium">
                                 {formatRange(booking.start_date, booking.end_date, locale)}
                               </span>
                               <br />
                               <Reference token={booking.booking_public_link} />
                             </td>
-                            <td className="px-5 py-3.5 text-ink-700">
+                            <td className="px-5 py-3.5 plus-ink">
                               {booking.guest_name ?? (
-                                <span className="text-ink-400">{booking.admin_note ?? '—'}</span>
+                                <span className="plus-dimmer">{booking.admin_note ?? '—'}</span>
                               )}
                               <Contact email={booking.guest_email} phone={booking.guest_phone} />
                             </td>
-                            <td className="px-5 py-3.5 text-ink-500">
+                            <td className="px-5 py-3.5 plus-dim">
                               {t.admin.methodLabels[booking.payment_method]}
                             </td>
                             <td className="px-5 py-3.5">
                               <StatusBadge status={booking.status} />
                             </td>
-                            <td className="px-5 py-3.5 text-end tabular-nums text-ink-900">
+                            <td className="px-5 py-3.5 text-end tabular-nums plus-ink">
                               {booking.total_cents > 0
                                 ? formatMoney(booking.total_cents, settings.currency_symbol, locale)
                                 : '—'}
@@ -553,7 +555,7 @@ export function Dashboard({
                                 <button
                                   type="button"
                                   onClick={() => void cancel(booking.id, t.admin.cancelConfirm)}
-                                  className="text-xs font-medium text-danger-600 underline underline-offset-4"
+                                  className="text-xs font-medium plus-danger underline underline-offset-4"
                                 >
                                   {t.admin.cancel}
                                 </button>
@@ -612,13 +614,13 @@ function BlockTab({
 
   return (
     <Section heading={t.admin.calendarHeading}>
-      <p className="-mt-4 mb-6 max-w-2xl text-sm leading-relaxed text-ink-500">
+      <p className="-mt-4 mb-6 max-w-2xl text-sm leading-relaxed plus-dim">
         {t.admin.calendarLead}
       </p>
 
-      <form onSubmit={submit} className="card grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+      <form onSubmit={submit} className="plus-card grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label htmlFor="block-start" className="field-label">
+          <label htmlFor="block-start" className="plus-label">
             {t.admin.seasonFrom}
           </label>
           <input
@@ -628,11 +630,11 @@ function BlockTab({
             min={todayStr()}
             value={start}
             onChange={(e) => setStart(e.target.value)}
-            className="field-input"
+            className="plus-field"
           />
         </div>
         <div>
-          <label htmlFor="block-end" className="field-label">
+          <label htmlFor="block-end" className="plus-label">
             {t.admin.seasonTo}
           </label>
           <input
@@ -642,11 +644,11 @@ function BlockTab({
             min={start || todayStr()}
             value={end}
             onChange={(e) => setEnd(e.target.value)}
-            className="field-input"
+            className="plus-field"
           />
         </div>
         <div>
-          <label htmlFor="block-reason" className="field-label">
+          <label htmlFor="block-reason" className="plus-label">
             {t.admin.blockReason}
           </label>
           <input
@@ -655,33 +657,36 @@ function BlockTab({
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder={t.admin.blockReasonPlaceholder}
-            className="field-input"
+            className="plus-field"
           />
         </div>
         <div className="flex items-end">
-          <button type="submit" className="btn-primary w-full py-2.5 text-xs">
+          <button type="submit" className="plus-btn-primary w-full py-2.5 text-xs">
             {t.admin.blockSubmit}
           </button>
         </div>
       </form>
 
-      <h3 className="mt-10 font-display text-lg text-forest-900">{t.admin.blockedHeading}</h3>
+      <h3 className="mt-10 text-lg plus-ink">{t.admin.blockedHeading}</h3>
       {blocked.length === 0 ? (
         <Empty>{t.admin.blockedEmpty}</Empty>
       ) : (
         <ul className="mt-4 space-y-2">
           {blocked.map((item) => (
-            <li key={item.id} className="card flex items-center justify-between gap-4 px-5 py-3.5">
+            <li
+              key={item.id}
+              className="plus-card flex items-center justify-between gap-4 px-5 py-3.5"
+            >
               <div>
-                <p className="font-medium text-ink-900">
+                <p className="font-medium plus-ink">
                   {formatRange(item.start_date, item.end_date, locale)}
                 </p>
-                {item.admin_note && <p className="text-sm text-ink-500">{item.admin_note}</p>}
+                {item.admin_note && <p className="text-sm plus-dim">{item.admin_note}</p>}
               </div>
               <button
                 type="button"
                 onClick={() => void onUnblock(item.id)}
-                className="text-xs font-medium text-danger-600 underline underline-offset-4"
+                className="text-xs font-medium plus-danger underline underline-offset-4"
               >
                 {t.admin.unblock}
               </button>
@@ -697,18 +702,18 @@ function StatusBadge({ status }: { status: string }) {
   const { t } = useI18n();
 
   const tone: Record<string, string> = {
-    confirmed: 'bg-success-600/12 text-success-600',
-    pending_cash: 'bg-warn-600/12 text-warn-600',
-    pending_payment: 'bg-warn-600/12 text-warn-600',
-    blocked: 'bg-ink-500/12 text-ink-700',
-    cancelled: 'bg-danger-600/10 text-danger-600',
-    expired: 'bg-ink-400/12 text-ink-400',
+    confirmed: 'plus-tone-ok',
+    pending_cash: 'plus-tone-wait',
+    pending_payment: 'plus-tone-wait',
+    blocked: 'plus-tone-mute',
+    cancelled: 'plus-tone-bad',
+    expired: 'plus-tone-quiet',
   };
 
   return (
     <span
       className={`inline-block whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${
-        tone[status] ?? 'bg-sand-200 text-ink-700'
+        tone[status] ?? 'plus-tone-mute'
       }`}
     >
       {t.admin.statusLabels[status] ?? status}
@@ -719,16 +724,12 @@ function StatusBadge({ status }: { status: string }) {
 function Section({ heading, children }: { heading: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="mb-6 font-display text-2xl text-forest-900">{heading}</h2>
+      <h2 className="mb-6 text-2xl plus-ink">{heading}</h2>
       {children}
     </section>
   );
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="rounded-2xl border border-dashed border-sand-300 px-6 py-12 text-center text-sm text-ink-400">
-      {children}
-    </p>
-  );
+  return <p className="plus-card plus-dimmer border px-6 py-12 text-center text-sm">{children}</p>;
 }

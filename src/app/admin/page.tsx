@@ -11,6 +11,25 @@ import { getServerStrings } from '@/lib/i18n/server';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Administracija nosi ISTU kožu kao sajt.
+ *
+ * `data-skin="onyx"` i `plus` su ono što na `(sajt)/[locale]/layout.tsx`
+ * odlučuje boje, pismo i oblike — sve ostalo ih čita kroz imena poslova. Bez
+ * ovog omotača administracija je padala na zadane vrijednosti osnovne palete:
+ * ulaz u zelenom, nadzorna ploča u pijesku, a kuća oko njih crna s mesingom.
+ *
+ * Namjerno bez `SmoothScroll`: inercija skrola je za razgledanje fotografija,
+ * a ovdje se radi.
+ */
+function Koza({ children }: { children: React.ReactNode }) {
+  return (
+    <div data-skin="onyx" className="plus min-h-dvh">
+      {children}
+    </div>
+  );
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getServerStrings();
 
@@ -27,21 +46,27 @@ export default async function AdminPage() {
 
   if (!authorized) {
     return (
-      <AdminGate
-        configured={Boolean(env.admin.accessCode && env.admin.sessionSecret)}
-        twoFactor={isTwoFactorConfigured}
-      />
+      <Koza>
+        <AdminGate
+          configured={Boolean(env.admin.accessCode && env.admin.sessionSecret)}
+          twoFactor={isTwoFactorConfigured}
+        />
+      </Koza>
     );
   }
 
   if (!isDatabaseConfigured) {
     return (
-      <main className="mx-auto max-w-2xl px-5 py-24">
-        <h1 className="font-display text-3xl text-forest-900">{t.admin.title}</h1>
-        <p className="mt-4 rounded-xl border border-warn-600/25 bg-warn-600/5 px-5 py-4 text-sm leading-relaxed text-warn-600">
-          {t.admin.databaseNotConfigured}
-        </p>
-      </main>
+      <Koza>
+        <main className="plus-surface min-h-dvh">
+          <div className="mx-auto max-w-2xl px-5 py-24">
+            <h1 className="plus-ink text-3xl">{t.admin.title}</h1>
+            <p className="plus-warn mt-6 px-5 py-4 text-sm leading-relaxed">
+              {t.admin.databaseNotConfigured}
+            </p>
+          </div>
+        </main>
+      </Koza>
     );
   }
 
@@ -51,5 +76,9 @@ export default async function AdminPage() {
     getSettings(),
   ]);
 
-  return <Dashboard bookings={bookings} periods={periods} settings={settings} />;
+  return (
+    <Koza>
+      <Dashboard bookings={bookings} periods={periods} settings={settings} />
+    </Koza>
+  );
 }
