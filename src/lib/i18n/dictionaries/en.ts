@@ -163,14 +163,13 @@ export const en: Dictionary = {
     },
   },
 
-
   showcase: {
     eyebrow: 'What is waiting for you',
     heading: 'The house, part by part',
     lead: 'What the photo at the top does not show — from the pool to the attic.',
     item: (n) =>
       (
-        {
+        ({
           2: {
             title: 'The pool',
             body: 'Heated by a heat pump, 7.5 × 3 m — big enough to swim in, gentle enough for children. Around it a paved terrace with loungers and garden seating.',
@@ -203,7 +202,7 @@ export const en: Dictionary = {
             title: 'Celebrations',
             body: 'The yard turns into a place for a celebration easily — a birthday, a gathering, a small party. For a larger group, get in touch before booking.',
           },
-        } as Record<number, { title: string; body: string }>
+        }) as Record<number, { title: string; body: string }>
       )[n] ?? { title: '', body: '' },
     extraTitle: 'Also included',
     extraLead: 'The things you take for granted, and miss the moment they are not there.',
@@ -291,6 +290,7 @@ export const en: Dictionary = {
     total: 'Total',
     seasonalNote: 'The daily rate depends on the season.',
     weekendNote: 'Saturdays and Sundays are charged at the weekend rate.',
+    weekendRateLabel: 'weekend',
     singleDayNote: 'A single-day booking, without an overnight stay.',
     timesNote: (checkIn, checkOut) =>
       `Check-in from ${checkIn} on the day of arrival, check-out by ${checkOut} on the day of departure.`,

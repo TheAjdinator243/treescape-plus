@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { StayCalendar } from '@/components/booking/StayCalendar';
 import {
@@ -14,13 +14,14 @@ import { useI18n } from '@/components/i18n/LocaleProvider';
 import { CountTo } from '@/components/motion/CountTo';
 import { LineReveal } from '@/components/motion/LineReveal';
 import { Reveal } from '@/components/motion/Reveal';
+import { scrollToElement } from '@/components/motion/scroll-to';
 import { GuestStepper } from '@/components/plus/GuestStepper';
 import { LiveField } from '@/components/plus/LiveField';
 import { PlusButton } from '@/components/plus/PlusButton';
 import { daysBetween, formatLong } from '@/lib/dates';
-import { count } from '@/lib/i18n';
-import { WEEKEND_PERIOD, formatMoney } from '@/lib/pricing';
-import type { BookingContext } from '@/lib/types';
+import { count, type Locale } from '@/lib/i18n';
+import { WEEKEND_PERIOD, formatMoney, groupByRate } from '@/lib/pricing';
+import type { BookingContext, PriceBreakdown } from '@/lib/types';
 
 /**
  * Rezervacija u "plus" izgledu — u tri koraka.
@@ -88,15 +89,60 @@ export function PlusBooking({ context }: { context: BookingContext }) {
   function go(next: number, direction: 'fwd' | 'back') {
     setDir(direction);
     setStep(next);
-
-    // Kartica se vraća na svoj vrh. Bez ovoga gost koji je na dnu dugačkog
-    // koraka pritisne "Dalje" i sljedeći korak počne negdje iznad njega, van
-    // ekrana — pomak se desio, ali ga niko nije vidio.
-    const card = cardRef.current;
-    if (card && card.getBoundingClientRect().top < 0) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   }
+
+  /*
+   * Svaki korak počinje na vrhu kartice.
+   *
+   * Bez ovoga gost koji je na dnu dugačkog koraka pritisne "Dalje" i sljedeći
+   * korak počne negdje iznad njega, van ekrana — pomak se desio, ali ga niko
+   * nije vidio.
+   *
+   * ── Zašto ovdje, a ne u `go` ──────────────────────────────────────────
+   * Prvi korak je kalendar dva mjeseca visok, drugi je kratak obrazac. Kad se
+   * pomak tražio odmah pri kliku, još je stajao stari raspored: React bi tek
+   * poslije iscrtao kraći korak, dokument bi se skupio, i preglednik bi skrol
+   * odsjekao na novu visinu. Mjereno: traženo 11.469, završilo na 14.497 —
+   * kartica je ostala 3.028px iznad ekrana. U efektu raspored je već novi, pa
+   * je cilj dostižan.
+   *
+   * ── Zašto kroz `scrollToElement` ──────────────────────────────────────
+   * Skrol na ovoj stranici vozi Lenis. Native `scrollIntoView` bi izdržao
+   * jedan kadar, pa bi ga Lenis sljedeći vratio nazad.
+   *
+   * Bezuslovno, bez provjere `top < 0`: čarobnjak od tri koraka se čita
+   * odozgo. Ako je kartica ionako na vrhu, pomak se ne vidi jer ga nema.
+   */
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    // Dolazak na stranicu nije prelaz koraka — tu se ne pomjera ništa.
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    const card = cardRef.current;
+    if (!card) return;
+
+    /*
+     * Dva kadra čekanja prije mjerenja.
+     *
+     * Novi korak ulazi s animacijom i raspored se pod njom još slegne. Ako se
+     * cilj izmjeri odmah, Lenis krene prema broju koji do kraja animacije više
+     * ne važi — mjereno, kartica je završavala 444px ispod vrha ekrana umjesto
+     * na njemu. Prvi kadar preglednik primijeni novi raspored, drugi ga izmjeri.
+     */
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => scrollToElement(card));
+    });
+
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
+  }, [step]);
 
   const railLabels = [t.booking.wizard.dates, t.booking.wizard.details, t.booking.wizard.review];
 
@@ -375,10 +421,8 @@ export function PlusBooking({ context }: { context: BookingContext }) {
               <div className="min-w-0">
                 {quote ? (
                   <>
-                    <p className="text-xs plus-dim">
-                      {t.booking.daysLabel(quote.dayCount)} ×{' '}
-                      {formatMoney(quote.averageDailyCents, quote.currencySymbol, locale)}
-                    </p>
+                    {/* Stvarne stavke, ne prosjek. Vidi `RateBreakdown` ispod. */}
+                    <RateBreakdown quote={quote} locale={locale} t={t} />
                     <p
                       className="text-2xl tabular-nums plus-total"
                       style={{ fontFamily: 'var(--font-plus-display)' }}
@@ -575,6 +619,57 @@ function Check({ className = 'h-4 w-4' }: { className?: string }) {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+/**
+ * Razrada cijene: koliko dana po kojoj cijeni, i zašto.
+ *
+ * Ovdje je stajalo `dayCount × averageDailyCents` — "3 dana × 266,67 KM" za
+ * boravak koji je zapravo dva radna dana po 250 i jedna subota po 300. Taj
+ * prosjek ne postoji ni u jednom cjenovniku: gost ga ne može provjeriti, a
+ * domaćin ga ne naplaćuje.
+ *
+ * ── Zašto je red o vikendu drugačiji od reda o sezoni ─────────────────────
+ * Sezonu je imenovao domaćin ("Ljeto", "Nova godina") i to ime ide onako kako
+ * ga je napisao — prevoditi tuđi naziv sezone bi značilo izmisliti ga. Vikend
+ * nije ime nego pravilo, isto na sva tri jezika, pa nosi ključ
+ * `WEEKEND_PERIOD` i ispisuje se iz rječnika.
+ *
+ * Kad je cijena kroz cijeli boravak ista, ostaje jedan red bez zagrade —
+ * dodatno objašnjenje tu nema šta da objasni.
+ */
+function RateBreakdown({
+  quote,
+  locale,
+  t,
+}: {
+  quote: PriceBreakdown;
+  locale: Locale;
+  t: ReturnType<typeof useI18n>['t'];
+}) {
+  const groups = groupByRate(quote.days);
+
+  return (
+    <div className="space-y-0.5">
+      {groups.map((group) => {
+        const reason =
+          group.periodName === WEEKEND_PERIOD
+            ? t.booking.weekendRateLabel
+            : (group.periodName ?? null);
+
+        return (
+          <p
+            key={`${group.periodName ?? 'base'}-${group.cents}`}
+            className="text-xs plus-dim tabular-nums"
+          >
+            {t.booking.daysLabel(group.dayCount)}
+            {reason ? <span className="plus-dimmer"> ({reason})</span> : null} ×{' '}
+            {formatMoney(group.cents, quote.currencySymbol, locale)}
+          </p>
+        );
+      })}
+    </div>
   );
 }
 

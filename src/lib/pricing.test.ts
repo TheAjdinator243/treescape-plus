@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { addDaysStr, daysBetween, eachDay, isWeekend, rangesOverlap, todayStr } from './dates';
 import {
+  groupByRate,
   WEEKEND_PERIOD,
   firstFreeDate,
   formatMoney,
@@ -130,11 +131,7 @@ describe('daysBetween — dan odlaska se ne naplaćuje', () => {
 
 describe('eachDay', () => {
   it('vraća datume [start, end) — bez dana odlaska', () => {
-    expect(eachDay('2027-08-01', '2027-08-04')).toEqual([
-      '2027-08-01',
-      '2027-08-02',
-      '2027-08-03',
-    ]);
+    expect(eachDay('2027-08-01', '2027-08-04')).toEqual(['2027-08-01', '2027-08-02', '2027-08-03']);
   });
 
   it('prazan raspon nema dana', () => {
@@ -379,5 +376,62 @@ describe('formatMoney', () => {
 
   it('podržava drugu valutu', () => {
     expect(formatMoney(35000, '€')).toBe('350 €');
+  });
+});
+
+describe('groupByRate — razrada cijene po stvarnim stavkama', () => {
+  it('spaja dane iste cijene i istog razloga, i kad nisu jedan do drugog', () => {
+    // pet 5.11 → uto 9.11 = petak, subota, nedjelja, ponedjeljak
+    //
+    // Petak i ponedjeljak nisu susjedni, ali se naplaćuju isto — pa idu u
+    // jedan red. Račun ima onoliko stavki koliko ima različitih cijena, ne
+    // koliko ima nizova dana; "1 dan × 250 + 2 dana × 300 + 1 dan × 250" je
+    // isti podatak napisan duže.
+    const quote = quoteStay('2027-11-05', '2027-11-09', [], withWeekend);
+
+    expect(groupByRate(quote.days)).toEqual([
+      { periodName: null, cents: 25000, dayCount: 2 },
+      { periodName: WEEKEND_PERIOD, cents: 30000, dayCount: 2 },
+    ]);
+  });
+
+  it('zbir stavki je uvijek jednak ukupnoj cijeni', () => {
+    const quote = quoteStay('2027-11-05', '2027-11-09', [], withWeekend);
+    const sum = groupByRate(quote.days).reduce((n, g) => n + g.cents * g.dayCount, 0);
+
+    expect(sum).toBe(quote.totalCents);
+  });
+
+  it('ista cijena iz dva različita razloga ostaje u dvije stavke', () => {
+    // Sezona namjerno naplaćuje tačno onoliko koliko i vikend. Spojiti ih
+    // znači tvrditi da je subota nešto drugo nego što jeste.
+    const sezona: RatePeriod[] = [
+      {
+        id: 's1',
+        name: 'Ljeto',
+        start_date: '2027-11-05',
+        end_date: '2027-11-06',
+        nightly_price_cents: 30000,
+        min_nights: null,
+        priority: 1,
+      },
+    ];
+
+    const quote = quoteStay('2027-11-05', '2027-11-08', sezona, withWeekend);
+    const groups = groupByRate(quote.days);
+
+    expect(groups).toEqual([
+      { periodName: 'Ljeto', cents: 30000, dayCount: 1 },
+      { periodName: WEEKEND_PERIOD, cents: 30000, dayCount: 2 },
+    ]);
+  });
+
+  it('kad je cijena ista kroz cijeli boravak, stavka je jedna', () => {
+    const quote = quoteStay('2027-11-08', '2027-11-11', [], settings);
+    expect(groupByRate(quote.days)).toEqual([{ periodName: null, cents: 25000, dayCount: 3 }]);
+  });
+
+  it('prazan boravak nema stavki', () => {
+    expect(groupByRate([])).toEqual([]);
   });
 });

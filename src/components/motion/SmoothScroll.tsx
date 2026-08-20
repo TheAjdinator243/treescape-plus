@@ -3,6 +3,7 @@
 import Lenis from 'lenis';
 import { useEffect } from 'react';
 
+import { registerScroller } from './scroll-to';
 import { useReducedMotion } from './use-reduced-motion';
 
 /**
@@ -30,6 +31,11 @@ import { useReducedMotion } from './use-reduced-motion';
  * 3. Sidra (`#rezervacija`) idu kroz `lenis.scrollTo`. Da ne idu, preglednik
  *    bi skočio sam, Lenis bi to primijetio tek poslije i "sustizao" ga —
  *    vidi se kao trzaj na svaki klik u navigaciji.
+ *
+ *    Iz istog razloga se instanca ostavlja u `scroll-to.ts`: pomak ne traže
+ *    samo sidra nego i dugme "Dalje" u rezervaciji, a ono nije link pa ga
+ *    slušalac ispod ne vidi. Bez toga je native pomak radio jedan kadar, pa
+ *    ga je Lenis vratio nazad.
  */
 
 /**
@@ -102,8 +108,10 @@ export function SmoothScroll() {
     };
 
     document.addEventListener('click', onClick);
+    const unregister = registerScroller(lenis);
 
     return () => {
+      unregister();
       document.removeEventListener('click', onClick);
       cancelAnimationFrame(frame);
       lenis.destroy();

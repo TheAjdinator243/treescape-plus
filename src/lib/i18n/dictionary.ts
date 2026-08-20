@@ -241,6 +241,8 @@ export interface Dictionary {
     total: string;
     seasonalNote: string;
     weekendNote: string;
+    /** Kratka oznaka uz vikend stavku u razradi cijene — npr. "2 dana (vikend) × 300 KM". */
+    weekendRateLabel: string;
     singleDayNote: string;
     /**
      * Vrijeme prijave i odjave iz postavki — isti tekst na sajtu, na potvrdi i

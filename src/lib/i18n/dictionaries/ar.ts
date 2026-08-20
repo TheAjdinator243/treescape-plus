@@ -168,14 +168,13 @@ export const ar: Dictionary = {
     },
   },
 
-
   showcase: {
     eyebrow: 'ما ينتظرك',
     heading: 'المنزل، جزءًا جزءًا',
     lead: 'ما لا تُظهره الصورة في الأعلى — من المسبح إلى العلية.',
     item: (n) =>
       (
-        {
+        ({
           2: {
             title: 'المسبح',
             body: 'مُدفّأ بمضخة حرارية، بمقاس 7٫5 × 3 م — واسع بما يكفي للسباحة، ولطيف للأطفال. حوله شرفة مرصوفة بكراسي استلقاء وأثاث جلوس.',
@@ -208,7 +207,7 @@ export const ar: Dictionary = {
             title: 'المناسبات',
             body: 'يتحوّل الفناء بسهولة إلى مكان للاحتفال — عيد ميلاد، لقاء، حفل صغير. للمجموعات الأكبر تواصل معنا قبل الحجز.',
           },
-        } as Record<number, { title: string; body: string }>
+        }) as Record<number, { title: string; body: string }>
       )[n] ?? { title: '', body: '' },
     extraTitle: 'إضافات',
     extraLead: 'تفاصيل تبدو بديهية، ولا تُلاحظ إلا حين تغيب.',
@@ -296,6 +295,7 @@ export const ar: Dictionary = {
     total: 'الإجمالي',
     seasonalNote: 'السعر اليومي يتغيّر حسب الموسم.',
     weekendNote: 'يُحتسب يوما السبت والأحد بسعر عطلة نهاية الأسبوع.',
+    weekendRateLabel: 'عطلة نهاية الأسبوع',
     singleDayNote: 'حجز ليوم واحد، من دون مبيت.',
     timesNote: (checkIn, checkOut) =>
       `تسجيل الدخول من ${checkIn} يوم الوصول، وتسجيل المغادرة حتى ${checkOut} يوم المغادرة.`,

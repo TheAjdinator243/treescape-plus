@@ -162,14 +162,13 @@ export const bs: Dictionary = {
     },
   },
 
-
   showcase: {
     eyebrow: 'Šta vas čeka',
     heading: 'Kuća, dio po dio',
     lead: 'Ono što se ne vidi s fotografije na vrhu — od bazena do potkrovlja.',
     item: (n) =>
       (
-        {
+        ({
           2: {
             title: 'Bazen',
             body: 'Grijan toplotnom pumpom, veličine 7,5 × 3 m — dovoljno velik za plivanje, a ugodan i djeci. Oko njega popločana terasa s ležaljkama i sjedećom garniturom.',
@@ -202,7 +201,7 @@ export const bs: Dictionary = {
             title: 'Proslave',
             body: 'Dvorište se lako pretvori u prostor za proslavu — rođendan, okupljanje, manje slavlje. Za veće društvo javite se prije rezervacije.',
           },
-        } as Record<number, { title: string; body: string }>
+        }) as Record<number, { title: string; body: string }>
       )[n] ?? { title: '', body: '' },
     extraTitle: 'Dodatno',
     extraLead: 'Sitnice koje se podrazumijevaju, a bez kojih boravak nije isti.',
@@ -290,6 +289,7 @@ export const bs: Dictionary = {
     total: 'Ukupno',
     seasonalNote: 'Cijena po danu zavisi od sezone.',
     weekendNote: 'Subota i nedjelja se naplaćuju po vikend cijeni.',
+    weekendRateLabel: 'vikend',
     singleDayNote: 'Rezervacija za jedan dan, bez noćenja.',
     timesNote: (checkIn, checkOut) =>
       `Prijava na dan dolaska od ${checkIn}, odjava na dan odlaska do ${checkOut}.`,

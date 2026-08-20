@@ -27,7 +27,7 @@ import {
   type DateStr,
 } from './dates';
 import { DEFAULT_LOCALE, getStrings, intlTag, type Locale } from './i18n';
-import type { AvailabilitySlot, PriceBreakdown, RatePeriod, Settings } from './types';
+import type { AvailabilitySlot, DayPrice, PriceBreakdown, RatePeriod, Settings } from './types';
 
 /**
  * Cijena za jedan dan, po ovom redoslijedu:
@@ -94,6 +94,39 @@ export function quoteStay(
     currency: settings.currency,
     currencySymbol: settings.currency_symbol,
   };
+}
+
+/** Jedna stavka u razradi cijene: koliko dana po kojoj cijeni, i zašto. */
+export interface RateGroup {
+  /** `null` = osnovna cijena, `WEEKEND_PERIOD` = vikend, inače naziv sezone. */
+  periodName: string | null;
+  cents: number;
+  dayCount: number;
+}
+
+/**
+ * Razrada cijene po stvarnim stavkama, umjesto jednog prosjeka.
+ *
+ * Sučelje je do sada pisalo "3 dana × 266,67 KM" — broj koji ne postoji ni u
+ * jednom cjenovniku i koji gost ne može provjeriti. Iza njega stoje dva radna
+ * dana po 250 i jedna subota po 300; to su brojevi koje domaćin naplaćuje i
+ * koje gost prepoznaje.
+ *
+ * Grupiše se po PARU (cijena, razlog), ne samo po cijeni: dvije sezone mogu
+ * imati istu cijenu, a spojiti ih u jedan red znači tvrditi da je jedna od
+ * njih nešto drugo. Redoslijed prati kalendar — prva stavka je ona koja se
+ * prva pojavljuje u boravku.
+ */
+export function groupByRate(days: DayPrice[]): RateGroup[] {
+  const groups: RateGroup[] = [];
+
+  for (const day of days) {
+    const existing = groups.find((g) => g.cents === day.cents && g.periodName === day.periodName);
+    if (existing) existing.dayCount += 1;
+    else groups.push({ periodName: day.periodName, cents: day.cents, dayCount: 1 });
+  }
+
+  return groups;
 }
 
 export type ValidationResult = { ok: true } | { ok: false; code: string; message: string };
