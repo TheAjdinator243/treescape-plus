@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 
 import { requireDatabase } from '@/lib/api-helpers';
 import { getBookingByToken } from '@/lib/booking-service';
-import { localeFromRequest } from '@/lib/i18n';
+import { rateLimitKey } from '@/lib/client-ip';
+import { getStrings, localeFromRequest } from '@/lib/i18n';
+import { consumeRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,8 +23,32 @@ export const dynamic = 'force-dynamic';
  * Nepostojeći token dobija isti odgovor kao tuđi: 404, bez objašnjenja. Tako
  * se ovim putem ne može pogađati koji tokeni postoje.
  */
+/**
+ * Koliko često jedna adresa smije provjeravati stanje.
+ *
+ * Stranica s potvrdom pita svakih petnaest sekundi, dakle četiri puta u
+ * minuti. Šezdeset ostavlja mjesta i za više otvorenih kartica, a zaustavlja
+ * petlju koja bi istim putem gađala bazu bez prestanka.
+ *
+ * Pogađanje tokena ovim putem ionako ne prolazi — token je uuid v4, dakle
+ * 122 bita — ali svako pitanje je i dalje čitanje iz baze koje neko plaća.
+ */
+const MAX_CHECKS = 60;
+const WINDOW_MS = 60_000;
+
 export async function GET(request: Request) {
   const locale = localeFromRequest(request);
+
+  const key = rateLimitKey(request, 'booking-status');
+  if (key) {
+    const limit = consumeRateLimit(key, MAX_CHECKS, WINDOW_MS);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: getStrings(locale).errors.TOO_MANY_REQUESTS },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } }
+      );
+    }
+  }
 
   const notReady = requireDatabase(locale);
   if (notReady) return notReady;

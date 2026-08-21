@@ -340,7 +340,7 @@ function intro(booking: Booking, locale: Locale, message: string): string {
   const t = getStrings(locale);
 
   return `<p style="font-size:15px;line-height:1.6;color:#453d35;margin:0 0 20px">
-            ${t.email.greeting(booking.guest_name ?? '')} ${message}
+            ${esc(t.email.greeting(booking.guest_name ?? ''))} ${message}
           </p>`;
 }
 
@@ -374,12 +374,42 @@ function mapsButton(locale: Locale): string {
  * Tekst piše čovjek, pa se prije prikaza pobjegnu znakovi koje bi HTML
  * pročitao kao oznake — inače bi "<" usred rečenice pojeo ostatak maila.
  */
+/**
+ * Sve što je gost napisao, prije nego uđe u HTML maila.
+ *
+ * Mail se sastavlja lijepljenjem stringova, pa je svaka vrijednost koja dolazi
+ * izvana ujedno i HTML koji će se izvršiti u tuđem pretincu. Ime, adresa,
+ * telefon i napomena su polja koja gost slobodno popunjava — dakle upravo ona
+ * kojima se ovdje ne smije vjerovati.
+ *
+ * Do sada je escapovan bio SAMO razlog odbijanja, koji piše domaćin. Polja
+ * koja piše gost išla su sirova. Bilo je obrnuto od ispravnog: escapuje se ono
+ * čemu se ne vjeruje, a ne ono čemu se vjeruje.
+ *
+ * Šta je konkretno moglo: gost se predstavi kao
+ * `<a href="https://negdje-drugo">Potvrdi rezervaciju</a>` i domaćinu u
+ * obavijesti — koja izgleda kao da dolazi s vlastitog sajta — stigne tuđi
+ * link. Ili, bez ikakve zle namjere, ime "Ana & Marko <ana@…>" pojede ostatak
+ * tabele jer preglednik pročita `<ana@…>` kao oznaku.
+ *
+ * Navodnik se pretvara i on: vrijednosti stoje unutar `style="…"` atributa u
+ * susjednim ćelijama, a jedan `"` na pogrešnom mjestu razbija atribut.
+ */
+export function esc(value: string | null | undefined): string {
+  return (value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function reasonBlock(locale: Locale, reason: string | null | undefined): string {
   const text = reason?.trim();
   if (!text) return '';
 
   const t = getStrings(locale);
-  const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const escaped = esc(text);
 
   return `<p style="font-size:14px;line-height:1.6;color:#453d35;background:#f4ede0;padding:14px 16px;border-radius:10px;margin:20px 0 0">
             <strong>${t.email.reasonLabel}:</strong><br>${escaped}
@@ -566,10 +596,7 @@ export async function sendGuestCashApproved(booking: Booking): Promise<void> {
  * kojoj inače ne bi imao pojma: datum bi se tiho oslobodio u kalendaru, a on
  * bi i dalje računao na tog gosta.
  */
-export async function sendOwnerGuestCancelled(
-  booking: Booking,
-  reason: string
-): Promise<void> {
+export async function sendOwnerGuestCancelled(booking: Booking, reason: string): Promise<void> {
   if (!env.email.ownerEmail) return;
 
   const locale = DEFAULT_LOCALE;
@@ -583,9 +610,9 @@ export async function sendOwnerGuestCancelled(
       t.email.ownerGuestCancelledTitle,
       `${detailRows(booking, locale)}
        <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:16px;border-top:1px solid #e9dcc7">
-         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowGuest}</td><td style="padding:8px 0;text-align:right">${booking.guest_name ?? '—'}</td></tr>
-         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowEmail}</td><td style="padding:8px 0;text-align:right">${booking.guest_email ?? '—'}</td></tr>
-         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowPhone}</td><td style="padding:8px 0;text-align:right">${booking.guest_phone ?? '—'}</td></tr>
+         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowGuest}</td><td style="padding:8px 0;text-align:right">${esc(booking.guest_name) || '—'}</td></tr>
+         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowEmail}</td><td style="padding:8px 0;text-align:right">${esc(booking.guest_email) || '—'}</td></tr>
+         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowPhone}</td><td style="padding:8px 0;text-align:right">${esc(booking.guest_phone) || '—'}</td></tr>
        </table>
        ${reasonBlock(locale, reason)}`
     )
@@ -686,12 +713,12 @@ export async function sendOwnerNotification(
       title,
       `${detailRows(booking, locale)}
        <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:16px;border-top:1px solid #e9dcc7">
-         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowGuest}</td><td style="padding:8px 0;text-align:right">${booking.guest_name ?? '—'}</td></tr>
-         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowEmail}</td><td style="padding:8px 0;text-align:right">${booking.guest_email ?? '—'}</td></tr>
-         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowPhone}</td><td style="padding:8px 0;text-align:right">${booking.guest_phone ?? '—'}</td></tr>
+         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowGuest}</td><td style="padding:8px 0;text-align:right">${esc(booking.guest_name) || '—'}</td></tr>
+         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowEmail}</td><td style="padding:8px 0;text-align:right">${esc(booking.guest_email) || '—'}</td></tr>
+         <tr><td style="padding:8px 0;color:#6b6157">${t.email.rowPhone}</td><td style="padding:8px 0;text-align:right">${esc(booking.guest_phone) || '—'}</td></tr>
          <tr><td style="padding:8px 0;color:#6b6157">${t.language.label}</td><td style="padding:8px 0;text-align:right">${languageName}</td></tr>
        </table>
-       ${booking.note ? `<p style="font-size:14px;color:#453d35;background:#f4ede0;padding:12px 16px;border-radius:10px;margin:16px 0 0"><strong>${t.email.rowNote}:</strong><br>${booking.note}</p>` : ''}
+       ${booking.note ? `<p style="font-size:14px;color:#453d35;background:#f4ede0;padding:12px 16px;border-radius:10px;margin:16px 0 0"><strong>${t.email.rowNote}:</strong><br>${esc(booking.note)}</p>` : ''}
        ${action}`
     )
   );

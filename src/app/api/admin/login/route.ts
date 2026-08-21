@@ -8,6 +8,7 @@ import {
   sessionCookieOptions,
   type AuthMethod,
 } from '@/lib/admin-auth';
+import { readJson } from '@/lib/api-helpers';
 import { rateLimitKey } from '@/lib/client-ip';
 import { requireSameOrigin } from '@/lib/csrf';
 import { env } from '@/lib/env';
@@ -36,6 +37,14 @@ export const dynamic = 'force-dynamic';
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 60_000;
 
+/**
+ * Ukupno pokušaja prijave na jednoj instanci, bez obzira ko ih šalje.
+ * Namjerno visoko: ovo nije granica za čovjeka nego za skriptu.
+ */
+const MAX_GLOBAL_ATTEMPTS = 100;
+const GLOBAL_WINDOW_MS = 30 * 60_000;
+const GLOBAL_KEY = 'admin-login:ukupno';
+
 export async function POST(request: Request) {
   const locale = localeFromRequest(request);
   const t = getStrings(locale);
@@ -60,6 +69,37 @@ export async function POST(request: Request) {
     );
   }
 
+  /*
+   * Dva brojača, i drugi postoji zbog rupe u prvom.
+   *
+   * Prvi broji po adresi. To je pravo ponašanje prema stvarnim ljudima —
+   * jedan pogrešan unos ne smije zaključati sve ostale. Ali adresa se čita iz
+   * zaglavlja, a zaglavlje piše onaj ko šalje zahtjev. Iza Vercela to nije
+   * problem: platforma upisuje `x-vercel-forwarded-for` i klijentovu vrijednost
+   * pregazi. Postavi li se sajt igdje gdje tog posrednika nema — goli
+   * `next start` na serveru, posrednik koji zaglavlje prosljeđuje kako je
+   * stiglo — napadač mijenja `X-Forwarded-For` u svakom zahtjevu i svaki put
+   * dobija svjež brojač. Provjereno: pet pokušaja s iste adrese daju 429, a
+   * tri pokušaja s tri izmišljene adrese prolaze sva tri.
+   *
+   * Drugi brojač zato ne gleda ko pita. Broji SVE pokušaje prijave na ovoj
+   * instanci — i uspjele i neuspjele, jer se u trenutku brojanja ishod još ne
+   * zna — i staje na stotinu u pola sata. Vlasnik se ne prijavljuje stotinu
+   * puta u pola sata; skripta koja rotira adrese pređe tu granicu za nekoliko
+   * sekundi.
+   *
+   * Ovo ne zamjenjuje dužinu koda — dvanaest znakova iz `admin-auth.ts` ostaje
+   * prava odbrana. Ovo je sloj koji stoji kad ta pretpostavka o posredniku
+   * padne, a padne tiho.
+   */
+  const globalLimit = consumeRateLimit(GLOBAL_KEY, MAX_GLOBAL_ATTEMPTS, GLOBAL_WINDOW_MS);
+  if (!globalLimit.allowed) {
+    return NextResponse.json(
+      { error: t.admin.gateLocked },
+      { status: 429, headers: { 'Retry-After': String(globalLimit.retryAfter) } }
+    );
+  }
+
   const key = rateLimitKey(request, 'admin-login') ?? 'admin-login:bez-adrese';
   const limit = consumeRateLimit(key, MAX_ATTEMPTS, WINDOW_MS);
 
@@ -70,14 +110,10 @@ export async function POST(request: Request) {
     );
   }
 
-  let payload: unknown;
-  try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json({ error: t.errors.INVALID_INPUT }, { status: 400 });
-  }
-
-  const parsed = adminLoginSchema.safeParse(payload);
+  // Kroz `readJson`, a ne kroz goli `request.json()`: tako i ova ruta dobija
+  // gornju granicu veličine tijela. Prijava je meta na koju se šalje najviše
+  // smeća, pa je zadnja koja bi smjela raščlanjivati šta god stigne.
+  const parsed = adminLoginSchema.safeParse(await readJson(request));
 
   /**
    * OBA faktora se provjeravaju prije nego se išta odgovori, i neuspjeh bilo
