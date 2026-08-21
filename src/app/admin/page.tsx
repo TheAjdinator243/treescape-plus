@@ -5,7 +5,9 @@ import { AdminGate } from '@/components/admin/AdminGate';
 import { Dashboard } from '@/components/admin/Dashboard';
 import { ADMIN_COOKIE, isValidSession } from '@/lib/admin-auth';
 import { listBookings } from '@/lib/booking-service';
+import { getTrafficSummary } from '@/lib/analytics';
 import { getRatePeriods, getSettings } from '@/lib/data';
+import { buildMoneyStats } from '@/lib/stats';
 import { env, isDatabaseConfigured, isTwoFactorConfigured } from '@/lib/env';
 import { getServerStrings } from '@/lib/i18n/server';
 
@@ -70,15 +72,26 @@ export default async function AdminPage() {
     );
   }
 
-  const [bookings, periods, settings] = await Promise.all([
+  const [bookings, periods, settings, traffic] = await Promise.all([
     listBookings(),
     getRatePeriods(),
     getSettings(),
+    getTrafficSummary(),
   ]);
+
+  // Brojke o novcu se računaju iz istih rezervacija koje se ispod i prikazuju,
+  // pa se spisak i pregled ne mogu razići.
+  const money = buildMoneyStats(bookings, settings.currency);
 
   return (
     <Koza>
-      <Dashboard bookings={bookings} periods={periods} settings={settings} />
+      <Dashboard
+        bookings={bookings}
+        periods={periods}
+        settings={settings}
+        money={money}
+        traffic={traffic}
+      />
     </Koza>
   );
 }

@@ -61,6 +61,22 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: t.errors.DATABASE_MISSING }, { status: 503 });
   }
 
+  /*
+   * Usput se brišu i zapisi o posjetama stariji od godinu dana.
+   *
+   * Ide ovdje, a ne u vlastiti cron: obje radnje su isto čišćenje jednom
+   * dnevno, a drugi zadatak bi bio i druga tajna i još jedna ruta koju treba
+   * čuvati. Greška u čišćenju ne smije zaustaviti oslobađanje termina — zato
+   * se ne čeka i ne prekida.
+   */
+  void supabaseAdmin()
+    .rpc('prune_page_views')
+    .then(({ error: pruneError }) => {
+      if (pruneError) {
+        console.error('[treescape] čišćenje posjeta nije uspjelo:', pruneError.message);
+      }
+    });
+
   const { data, error } = await supabaseAdmin().rpc('release_expired_holds');
 
   if (error) {

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 
+import { PageView } from '@/components/analytics/PageView';
 import { SmoothScroll } from '@/components/motion/SmoothScroll';
 import { LOCALES, isLocale, type Locale } from '@/lib/i18n';
 
@@ -44,6 +45,10 @@ export default async function SajtLayout({
     <div data-skin="onyx" className="plus">
       {/* Glatki skrol s inercijom — samo onome ko nije tražio manje animacija. */}
       <SmoothScroll />
+      {/* Brojač posjeta. Bez kolačića i bez praćenja kroz vrijeme — vidi
+          `lib/analytics.ts`. Stoji ovdje, u rasporedu jezika, pa hvata sve
+          stranice sajta i nijednu iz administracije. */}
+      <PageView locale={locale} />
       {children}
     </div>
   );

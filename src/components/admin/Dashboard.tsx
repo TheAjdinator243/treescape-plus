@@ -9,12 +9,15 @@ import { formatDateTime, formatRange, todayStr } from '@/lib/dates';
 import { count } from '@/lib/i18n';
 import { formatMoney } from '@/lib/pricing';
 import { bookingReference } from '@/lib/reference';
+import type { TrafficSummary } from '@/lib/analytics';
+import type { MoneyStats } from '@/lib/stats';
 import type { Booking, RatePeriod, Settings } from '@/lib/types';
 
+import { OverviewTab } from './OverviewTab';
 import { PricingTab } from './PricingTab';
 import { useLiveRequests } from './useLiveRequests';
 
-type Tab = 'requests' | 'bookings' | 'calendar' | 'pricing';
+type Tab = 'overview' | 'requests' | 'bookings' | 'calendar' | 'pricing';
 
 /**
  * Pitanje za razlog, koji gost dobija u mailu.
@@ -172,14 +175,18 @@ export function Dashboard({
   bookings,
   periods,
   settings,
+  money,
+  traffic,
 }: {
   bookings: Booking[];
   periods: RatePeriod[];
   settings: Settings;
+  money: MoneyStats;
+  traffic: TrafficSummary;
 }) {
   const { locale, t } = useI18n();
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>('requests');
+  const [tab, setTab] = useState<Tab>('overview');
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -289,6 +296,7 @@ export function Dashboard({
   }
 
   const tabs: { id: Tab; label: string; badge?: number }[] = [
+    { id: 'overview', label: t.admin.tabOverview },
     { id: 'requests', label: t.admin.tabRequests, badge: requests.length },
     { id: 'bookings', label: t.admin.tabBookings },
     { id: 'calendar', label: t.admin.tabCalendar },
@@ -354,6 +362,14 @@ export function Dashboard({
         )}
 
         <div className={pending ? 'pointer-events-none opacity-60 transition-opacity' : ''}>
+          {tab === 'overview' && (
+            <OverviewTab
+              money={money}
+              traffic={traffic}
+              currencySymbol={settings.currency_symbol}
+            />
+          )}
+
           {tab === 'requests' && (
             <>
               <Section heading={t.admin.requestsHeading}>

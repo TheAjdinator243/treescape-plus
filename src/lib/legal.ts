@@ -8,7 +8,10 @@ import type { Locale } from './i18n';
  * prepisan s tuđeg sajta. Nabrojani su tačno oni podaci koje forma traži
  * (`api/booking/reserve`), tačno oni kolačići koji se postavljaju
  * (`treescape_jezik`, `treescape_admin`) i tačno one usluge kojima podaci
- * odlaze. Nema analitike ni pratilaca, pa se to i piše — jer je istina i jer
+ * odlaze. Posjete se broje u vlastitoj bazi, bez kolačića i bez praćenja
+ * osobe kroz vrijeme (vidi `lib/analytics.ts`) — i to ovdje piše tačno tako
+ * kako jeste. Tekst koji tvrdi da analitike NEMA bio bi netačan od trenutka
+ * kad je brojač uveden, a netačna politika privatnosti je gora od nikakve —
  * je prednost.
  *
  * ── Šta NIJE ──────────────────────────────────────────────────────────────
@@ -104,7 +107,8 @@ export function privacyDoc(locale: Locale, f: LegalFacts): LegalDoc {
           body: [
             'Only what the booking form asks for: your name, email address, phone number, the number of guests, the dates you selected, and the note you write if you write one.',
             'We do not ask for and do not store payment card details. Payment is arranged directly with the host.',
-            'We do not use analytics, advertising pixels or any other tracking. There is no third-party script on this site.',
+            'We count page visits ourselves, in our own database, and nowhere else — no analytics service, no advertising pixel, no third-party script on this page. What is stored is the date, which page was opened, the language, the type of device and the site you arrived from. Never your IP address, never your name.',
+            'To tell one visitor from another without a cookie, a one-way fingerprint is calculated from your address and browser using a salt that changes every day. Yesterday\u2019s fingerprint and today\u2019s cannot be linked, so this counts visits without following anyone. Records older than a year are deleted.',
           ],
         },
         {
@@ -119,7 +123,7 @@ export function privacyDoc(locale: Locale, f: LegalFacts): LegalDoc {
           body: [
             'This site sets one cookie for visitors: `treescape_jezik`, which remembers the language you chose. It lasts one year and contains nothing but the language code.',
             'A second cookie, `treescape_admin`, exists only for the host after signing in to the administration. Guests never receive it.',
-            'There are no advertising or analytics cookies, so there is nothing to consent to and no banner asking you to.',
+            'There are no advertising or analytics cookies. Visits are counted without any cookie at all (see above), so there is nothing to consent to and no banner asking you to.',
           ],
         },
         {
@@ -175,7 +179,8 @@ export function privacyDoc(locale: Locale, f: LegalFacts): LegalDoc {
           body: [
             'فقط ما يطلبه نموذج الحجز: الاسم، البريد الإلكتروني، رقم الهاتف، عدد الضيوف، التواريخ المختارة، والملاحظة إن كتبتها.',
             'لا نطلب بيانات بطاقات الدفع ولا نحفظها. الدفع يُرتَّب مباشرة مع المضيف.',
-            'لا نستخدم أدوات تحليل ولا بكسلات إعلانية ولا أي تتبّع آخر. لا يوجد على هذا الموقع أي سكربت لطرف ثالث.',
+            'نحصي الزيارات بأنفسنا، في قاعدة بياناتنا ولا مكان آخر — بلا أي خدمة تحليلات، وبلا بكسل إعلاني، وبلا أي سكربت لطرف ثالث على هذه الصفحة. يُسجَّل التاريخ، وأي صفحة فُتحت، واللغة، ونوع الجهاز، والموقع الذي أتيت منه. لا عنوان IP أبدًا، ولا اسمك أبدًا.',
+            'ولتمييز زائر عن آخر بلا ملف تعريف ارتباط، تُحسَب بصمة أحادية الاتجاه من عنوانك ومتصفحك بملح يتغيّر كل يوم. لا يمكن ربط بصمة الأمس ببصمة اليوم، فتُحصى الزيارات دون تتبّع أحد. وتُحذف السجلات الأقدم من سنة.',
           ],
         },
         {
@@ -190,7 +195,7 @@ export function privacyDoc(locale: Locale, f: LegalFacts): LegalDoc {
           body: [
             'يضع الموقع ملفًا واحدًا للزوار: `treescape_jezik` الذي يتذكّر اللغة التي اخترتها. مدّته سنة ولا يحتوي سوى رمز اللغة.',
             'وهناك ملف ثانٍ، `treescape_admin`، للمضيف وحده بعد دخوله إلى لوحة الإدارة. لا يصل الضيوف أبدًا.',
-            'لا توجد ملفات إعلانية ولا تحليلية، فلا شيء تُطلب الموافقة عليه ولا لافتة تسألك عنها.',
+            'لا توجد ملفات إعلانية ولا تحليلية. وتُحصى الزيارات بلا أي ملف تعريف ارتباط إطلاقًا (انظر أعلاه)، فلا شيء تُطلب الموافقة عليه ولا لافتة تسألك عنها.',
           ],
         },
         {
@@ -244,7 +249,8 @@ export function privacyDoc(locale: Locale, f: LegalFacts): LegalDoc {
         body: [
           'Samo ono što forma za rezervaciju traži: ime i prezime, email adresu, broj telefona, broj gostiju, odabrane datume i napomenu ako je napišete.',
           'Podatke o platnoj kartici ne tražimo i ne čuvamo. Plaćanje se dogovara direktno s domaćinom.',
-          'Ne koristimo analitiku, reklamne piksele niti bilo kakvo praćenje. Na ovom sajtu nema nijedne tuđe skripte.',
+          'Posjete brojimo sami, u vlastitoj bazi i nigdje drugdje — bez ijednog servisa za analitiku, bez reklamnog piksela i bez ijedne tuđe skripte na stranici. Bilježi se datum, koja je stranica otvorena, jezik, vrsta uređaja i sajt s kojeg ste došli. Nikad vaša IP adresa i nikad vaše ime.',
+          'Da bi se jedan posjetilac razlikovao od drugog bez kolačića, iz adrese i preglednika se računa jednosmjerni otisak, posoljen vrijednošću koja se mijenja svaki dan. Jučerašnji i današnji otisak iste osobe ne mogu se povezati, pa se posjete broje bez praćenja ikoga. Zapisi stariji od godinu dana se brišu.',
         ],
       },
       {
@@ -259,7 +265,7 @@ export function privacyDoc(locale: Locale, f: LegalFacts): LegalDoc {
         body: [
           'Sajt posjetiocu postavlja jedan kolačić: `treescape_jezik`, koji pamti jezik koji ste odabrali. Traje godinu dana i u njemu ne stoji ništa osim oznake jezika.',
           'Drugi kolačić, `treescape_admin`, postoji samo za domaćina nakon prijave u administraciju. Gost ga nikad ne dobije.',
-          'Reklamnih i analitičkih kolačića nema, pa nema ni na šta pristati ni trake koja to pita.',
+          'Reklamnih i analitičkih kolačića nema. Posjete se broje potpuno bez kolačića (vidi gore), pa nema ni na šta pristati ni trake koja to pita.',
         ],
       },
       {

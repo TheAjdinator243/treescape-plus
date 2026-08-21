@@ -105,3 +105,21 @@ export const ratePeriodSchema = z.object({
   min_nights: z.number().int().min(1).max(60).nullable(),
   priority: z.number().int().min(0).max(1000),
 });
+
+/**
+ * Šta stranica smije javiti o jednoj posjeti.
+ *
+ * Namjerno mršavo. Sve ostalo — ko je posjetilac, odakle je došao, s kojom
+ * adresom — server zaključuje sam, iz zaglavlja, jer je to jedino što klijent
+ * ne može izmisliti u svoju korist.
+ */
+export const trackSchema = z.object({
+  /** Putanja bez upitnika i sidra; upitnik zna nositi tuđe podatke. */
+  path: z
+    .string()
+    .min(1)
+    .max(200)
+    .transform((value) => value.split('?')[0]!.split('#')[0]!),
+  locale: z.enum(['bs', 'en', 'ar']).nullable().optional(),
+  device: z.enum(['phone', 'tablet', 'desktop']).nullable().optional(),
+});
