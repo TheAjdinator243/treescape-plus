@@ -221,6 +221,12 @@ export const en: Dictionary = {
     },
   },
 
+  notFound: {
+    title: 'This page does not exist',
+    lead: 'The link may have expired or been mistyped. If you were looking for your reservation, check the address in the email you received — or call us and we will find it together.',
+    home: 'Back to the home page',
+  },
+
   faq: {
     heading: 'Frequently asked questions',
     lead: 'If anything is unclear, feel free to get in touch.',

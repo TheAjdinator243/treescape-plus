@@ -80,55 +80,65 @@ export function LanguageChooser({ suggested }: { suggested: Locale }) {
   }, []);
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center bg-forest-900 px-5 py-12">
-      <p className="font-display text-3xl text-sand-50 sm:text-4xl">TreeScape</p>
+    /* Koža stoji ovdje jer je ovo `/`, izvan rasporeda jezika — isti razlog
+       kao na 404. Bez nje bi ekran pao na krem podlogu osnovnog sajta, a on
+       je prvo što novi posjetilac uopće vidi. */
+    <div data-skin="onyx" className="plus">
+      <main className="plus-surface flex min-h-dvh flex-col items-center justify-center px-5 py-12">
+        <p
+          className="plus-ink text-3xl sm:text-4xl"
+          style={{ fontFamily: 'var(--font-plus-display)' }}
+        >
+          TreeScape
+        </p>
 
-      {/* Naslov se smjenjuje, pa ga čitač ekrana ne prati — spisak jezika ispod
+        {/* Naslov se smjenjuje, pa ga čitač ekrana ne prati — spisak jezika ispod
           miruje i njega čita normalno. */}
-      <div
-        key={shown}
-        dir={directionOf(shown)}
-        aria-hidden="true"
-        className="animate-fade-rise mt-10 text-center"
-      >
-        <h1 className="font-display text-2xl text-sand-50 sm:text-3xl">{copy.gateTitle}</h1>
-        <p className="mt-3 text-sm text-moss-300/90 sm:text-base">{copy.gateLead}</p>
-      </div>
+        <div
+          key={shown}
+          dir={directionOf(shown)}
+          aria-hidden="true"
+          className="animate-fade-rise mt-10 text-center"
+        >
+          <h1 className="plus-ink text-2xl sm:text-3xl">{copy.gateTitle}</h1>
+          <p className="plus-dim mt-3 text-sm sm:text-base">{copy.gateLead}</p>
+        </div>
 
-      <nav aria-label={copy.gateAria} className="mt-10 w-full max-w-xs">
-        <ul className="flex flex-col gap-3">
-          {LOCALES.map((locale) => (
-            <li key={locale}>
-              <Link
-                href={localePath(locale)}
-                hrefLang={locale}
-                lang={locale}
-                dir={directionOf(locale)}
-                scroll={false}
-                onClick={() => {
-                  rememberLocale(locale);
-                  goToTop();
-                }}
-                className="block w-full rounded-2xl border border-forest-700 bg-forest-800 px-6 py-4 text-center text-lg font-medium text-sand-50 transition-colors hover:border-moss-400 hover:bg-forest-700 focus-visible:border-moss-400"
-              >
-                {getStrings(locale).language.names[locale]}
-              </Link>
-            </li>
+        <nav aria-label={copy.gateAria} className="mt-10 w-full max-w-xs">
+          <ul className="flex flex-col gap-3">
+            {LOCALES.map((locale) => (
+              <li key={locale}>
+                <Link
+                  href={localePath(locale)}
+                  hrefLang={locale}
+                  lang={locale}
+                  dir={directionOf(locale)}
+                  scroll={false}
+                  onClick={() => {
+                    rememberLocale(locale);
+                    goToTop();
+                  }}
+                  className="plus-card plus-ink block w-full border px-6 py-4 text-center text-lg font-medium transition-colors hover:border-brass-400"
+                >
+                  {getStrings(locale).language.names[locale]}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Koji je jezik trenutno na redu — sitno, samo da se vidi da ekran radi. */}
+        <ul className="mt-8 flex items-center gap-2" aria-hidden="true">
+          {order.map((locale, i) => (
+            <li
+              key={locale}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                i === active ? 'w-6 plus-pulse' : 'w-1.5 plus-rail-track'
+              }`}
+            />
           ))}
         </ul>
-      </nav>
-
-      {/* Koji je jezik trenutno na redu — sitno, samo da se vidi da ekran radi. */}
-      <ul className="mt-8 flex items-center gap-2" aria-hidden="true">
-        {order.map((locale, i) => (
-          <li
-            key={locale}
-            className={`h-1.5 rounded-full transition-all duration-500 ${
-              i === active ? 'w-6 bg-moss-400' : 'w-1.5 bg-forest-700'
-            }`}
-          />
-        ))}
-      </ul>
-    </main>
+      </main>
+    </div>
   );
 }

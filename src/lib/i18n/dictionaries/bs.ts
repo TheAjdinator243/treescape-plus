@@ -220,6 +220,12 @@ export const bs: Dictionary = {
     },
   },
 
+  notFound: {
+    title: 'Ove stranice nema',
+    lead: 'Link je možda istekao ili je pogrešno prepisan. Ako ste tražili svoju rezervaciju, provjerite adresu iz mejla koji ste dobili — ili nas nazovite, pa je nađemo zajedno.',
+    home: 'Nazad na početnu',
+  },
+
   faq: {
     heading: 'Česta pitanja',
     lead: 'Ako nešto nije jasno, slobodno nas kontaktirajte.',

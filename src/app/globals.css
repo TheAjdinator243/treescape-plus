@@ -1933,6 +1933,64 @@ html[lang='ar'] body * {
   color-scheme: dark;
 }
 
+/*
+ * Podloga IZA stranice, i tekstura na njoj.
+ *
+ * `<body>` je krem (`sand-50`), jer je to boja osnovnog sajta. Tamnu plohu
+ * crta omotač `.plus` — a on je unutar `<body>`, pa sve što je izvan njega
+ * ostaje krem: guranje preko vrha ili dna na telefonu (ono odskakanje) pokaže
+ * bijelu traku, a stranica kraća od ekrana pokaže krem ispod sebe. Boju iza
+ * stranice crta `<html>`, pa se ovdje i postavlja.
+ *
+ * `:has()` umjesto klase na `<body>`: koja je koža u igri zna omotač, a on se
+ * iscrtava tek u rasporedu jezika — korijenski raspored to ne može znati.
+ */
+html:has(.plus[data-skin='onyx']) {
+  background-color: var(--color-onyx-950);
+}
+
+/*
+ * Ploha nije ravna crna.
+ *
+ * Dva sloja, oba jedva vidljiva i oba čisti CSS — bez slike, bez zahtjeva
+ * prema mreži i bez ijednog pravila u CSP-u:
+ *
+ *   1. Topli odsjaj pri vrhu, kao svjetlo koje pada u prostoriju. Mesing je
+ *      jedina boja ove kože, pa i odsjaj dolazi odatle.
+ *   2. Mreža tačaka na 2%, korak 34px. Na fotografiji se ne vidi, na praznoj
+ *      plohi daje zrno — dovoljno da veliko crno polje prestane izgledati kao
+ *      rupa u stranici, a premalo da se primijeti kao uzorak.
+ *
+ * `background-attachment: fixed` drži odsjaj na mjestu dok sadržaj klizi
+ * preko njega; da se pomjera zajedno sa stranicom, na dugoj stranici bi se
+ * ponovio desetak puta.
+ */
+.plus[data-skin='onyx'] {
+  background-image:
+    radial-gradient(
+      120% 70% at 50% -10%,
+      color-mix(in oklab, var(--color-brass-400) 7%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 1px 1px,
+      color-mix(in oklab, var(--color-ivory-50) 2%, transparent) 1px,
+      transparent 0
+    );
+  background-size:
+    100% 100%,
+    34px 34px;
+  background-attachment: fixed, scroll;
+}
+
+/* Ko traži manje animacija ne traži manje teksture — ali fiksna podloga na
+   nekim preglednicima koči skrol, pa se tu vraća na običnu. */
+@media (prefers-reduced-motion: reduce) {
+  .plus[data-skin='onyx'] {
+    background-attachment: scroll, scroll;
+  }
+}
+
 /* Ivica koja nosi naglasak — aktivni jezičak u administraciji. */
 .plus .plus-rule-accent {
   border-color: var(--ui-accent);

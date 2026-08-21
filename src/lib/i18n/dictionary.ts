@@ -205,6 +205,13 @@ export interface Dictionary {
     places: Record<PlaceKey, string>;
   };
 
+  /** Stranica koje nema — hvata i ostarjele linkove na rezervaciju. */
+  notFound: {
+    title: string;
+    lead: string;
+    home: string;
+  };
+
   faq: {
     heading: string;
     lead: string;
