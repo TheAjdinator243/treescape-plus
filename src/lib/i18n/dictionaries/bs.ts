@@ -10,12 +10,12 @@ import { count, plural } from '../plural';
 
 export const bs: Dictionary = {
   site: {
-    name: 'TreeScape',
+    name: 'VAŠE IME',
     tagline: 'Vila u zagrljaju šume',
     description:
-      'TreeScape je vila okružena šumom — mir, priroda i sva udobnost doma. Provjerite slobodne termine i rezervišite online.',
+      'VAŠE IME je vila okružena šumom — mir, priroda i sva udobnost doma. Provjerite slobodne termine i rezervišite online.',
     keywords: [
-      'TreeScape',
+      'VAŠE IME',
       'vila',
       'apartman',
       'smještaj',
@@ -49,7 +49,7 @@ export const bs: Dictionary = {
 
   hero: {
     eyebrow: 'Privatna vila za odmor',
-    title: 'TreeScape',
+    title: 'VAŠE IME',
     subtitle: 'Probudite se uz zvuk šume, a ne uz zvuk grada.',
     cta: 'Provjeri dostupnost',
     secondaryCta: 'Pogledaj kuću',
@@ -86,13 +86,13 @@ export const bs: Dictionary = {
   },
 
   about: {
-    heading: 'Dobrodošli u TreeScape',
+    heading: 'Dobrodošli u VAŠE IME',
     lead: 'Kuća skrivena među stablima, dovoljno blizu da se lako dođe, a dovoljno daleko da se konačno odmorite.',
     body: [
-      'TreeScape je porodična vila okružena visokom šumom, sa velikom terasom okrenutom prema dolini. Unutra je sve što treba za duži boravak — potpuno opremljena kuhinja, topla dnevna soba s kaminom i sobe u kojima se stvarno naspavate.',
+      'VAŠE IME je porodična vila okružena visokom šumom, sa velikom terasom okrenutom prema dolini. Unutra je sve što treba za duži boravak — potpuno opremljena kuhinja, topla dnevna soba s kaminom i sobe u kojima se stvarno naspavate.',
       'Idealno za porodični odmor, bijeg s prijateljima na vikend ili mirnu sedmicu rada iz prirode. Ljeti roštilj i duge večeri na terasi, zimi snijeg i vatra u kaminu.',
     ],
-    imageAlt: 'Vila TreeScape izvana',
+    imageAlt: 'Vila VAŠE IME izvana',
     stats: {
       guests: 'gostiju',
       bedrooms: 'spavaće sobe',
@@ -209,12 +209,12 @@ export const bs: Dictionary = {
   location: {
     heading: 'Gdje se nalazimo',
     lead: 'Dovoljno blizu da se lako stigne, dovoljno daleko da se čuje samo šuma.',
-    mapTitle: 'Karta lokacije vile TreeScape',
+    mapTitle: 'Karta lokacije vile VAŠE IME',
     openInMaps: 'Otvori u Google Mapama',
     opensInNewTab: 'otvara se u novoj kartici',
     driveTime: (minutes) => `${minutes} min vožnje`,
     places: {
-      city: 'Sarajevo',
+      city: 'Vaš grad',
       airport: 'Aerodrom',
       shop: 'Najbliža prodavnica',
     },
@@ -417,7 +417,7 @@ export const bs: Dictionary = {
   },
 
   admin: {
-    gateTitle: 'TreeScape administracija',
+    gateTitle: 'VAŠE IME administracija',
     gateLead: 'Unesite pristupni kod.',
     gateCode: 'Pristupni kod',
     gateTotp: 'Kod s telefona',

@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import { Scene } from '@/components/motion/Scene';
 import { TextReveal } from '@/components/motion/TextReveal';
+import { PROPERTY } from '@/lib/property';
 import { formatLong, todayStr } from '@/lib/dates';
 import { HERO_IMAGE } from '@/lib/gallery';
 import { getServerStrings } from '@/lib/i18n/server';
@@ -48,8 +49,8 @@ export async function PlusHero({
 
   const facts = [
     { value: '8', label: t.about.stats.guests },
-    { value: '2', label: t.about.stats.bedrooms },
-    { value: '2', label: t.about.stats.bathrooms },
+    { value: String(PROPERTY.bedrooms), label: t.about.stats.bedrooms },
+    { value: String(PROPERTY.bathrooms), label: t.about.stats.bathrooms },
   ];
 
   return (

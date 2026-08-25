@@ -4,6 +4,7 @@ import { Counter } from '@/components/motion/Counter';
 import { LineReveal } from '@/components/motion/LineReveal';
 import { Parallax } from '@/components/motion/Parallax';
 import { Reveal } from '@/components/motion/Reveal';
+import { PROPERTY } from '@/lib/property';
 import { ABOUT_IMAGE } from '@/lib/gallery';
 import { getServerStrings } from '@/lib/i18n/server';
 
@@ -22,8 +23,8 @@ export async function PlusAbout() {
 
   const stats = [
     { value: 8, label: t.about.stats.guests },
-    { value: 2, label: t.about.stats.bedrooms },
-    { value: 2, label: t.about.stats.bathrooms },
+    { value: PROPERTY.bedrooms, label: t.about.stats.bedrooms },
+    { value: PROPERTY.bathrooms, label: t.about.stats.bathrooms },
   ];
 
   return (

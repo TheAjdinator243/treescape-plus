@@ -1,12 +1,20 @@
 /**
  * Kontakt podaci — na jednom mjestu za cijeli sajt.
  *
- * Stajali su uz podnožje osnovnog sajta, koje ova verzija nema. Ovdje su
- * jer ih koristi i podnožje i poziv na dnu stranice, a ni jedno ni drugo
- * nije mjesto na koje se ide kad se promijeni broj telefona.
+ * ┌────────────────────────────────────────────────────────────────────────┐
+ * │  OVO SU PRAZNA MJESTA — ZAMIJENI IH SVOJIM                             │
+ * │                                                                        │
+ * │  Upiši svoj broj i mail ovdje i promijenit će se na cijelom sajtu:     │
+ * │  u podnožju, u pozivu na dnu stranice i u mailovima koje gost dobija.  │
+ * │  Nema drugog mjesta na kojem ovo treba dirati.                         │
+ * │                                                                        │
+ * │  `phoneHref` je isti broj bez razmaka i crtica — to je ono na šta se   │
+ * │  telefon javi kad gost pritisne broj. Ako ga zaboraviš promijeniti,    │
+ * │  broj će PISATI tačno, a zvati pogrešno.                               │
+ * └────────────────────────────────────────────────────────────────────────┘
  */
 export const CONTACT = {
-  phone: '+387 61 000 000',
-  phoneHref: 'tel:+38761000000',
-  email: 'info@treescape.ba',
+  phone: '+387 6x xxx xxx',
+  phoneHref: 'tel:+3876xxxxxxx',
+  email: 'vas@email.com',
 };

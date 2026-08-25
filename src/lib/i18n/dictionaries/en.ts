@@ -5,12 +5,12 @@ import { count, plural } from '../plural';
 
 export const en: Dictionary = {
   site: {
-    name: 'TreeScape',
+    name: 'YOUR NAME',
     tagline: 'A villa in the arms of the forest',
     description:
-      'TreeScape is a villa surrounded by forest — quiet, nature and all the comfort of home. Check the free dates and book online.',
+      'YOUR NAME is a villa surrounded by forest — quiet, nature and all the comfort of home. Check the free dates and book online.',
     keywords: [
-      'TreeScape',
+      'YOUR NAME',
       'villa',
       'holiday home',
       'accommodation',
@@ -44,7 +44,7 @@ export const en: Dictionary = {
 
   hero: {
     eyebrow: 'Private holiday villa',
-    title: 'TreeScape',
+    title: 'YOUR NAME',
     subtitle: 'Wake up to the sound of the forest, not the sound of the city.',
     cta: 'Check availability',
     secondaryCta: 'See the house',
@@ -81,13 +81,13 @@ export const en: Dictionary = {
   },
 
   about: {
-    heading: 'Welcome to TreeScape',
+    heading: 'Welcome to YOUR NAME',
     lead: 'A house hidden among the trees — close enough to reach easily, far enough to finally rest.',
     body: [
-      'TreeScape is a family villa surrounded by tall forest, with a large terrace facing the valley. Inside there is everything you need for a longer stay — a fully equipped kitchen, a warm living room with a fireplace and bedrooms you actually sleep in.',
+      'YOUR NAME is a family villa surrounded by tall forest, with a large terrace facing the valley. Inside there is everything you need for a longer stay — a fully equipped kitchen, a warm living room with a fireplace and bedrooms you actually sleep in.',
       'Ideal for a family holiday, a weekend escape with friends or a quiet week of working from nature. Barbecue and long evenings on the terrace in summer, snow and a lit fireplace in winter.',
     ],
-    imageAlt: 'TreeScape villa from outside',
+    imageAlt: 'YOUR NAME villa from outside',
     stats: {
       guests: 'guests',
       bedrooms: 'bedrooms',
@@ -210,12 +210,12 @@ export const en: Dictionary = {
   location: {
     heading: 'Where we are',
     lead: 'Close enough to reach easily, far enough to hear nothing but the forest.',
-    mapTitle: 'Map of the TreeScape villa location',
+    mapTitle: 'Map of the YOUR NAME villa location',
     openInMaps: 'Open in Google Maps',
     opensInNewTab: 'opens in a new tab',
     driveTime: (minutes) => `${minutes} min drive`,
     places: {
-      city: 'Sarajevo',
+      city: 'Your town',
       airport: 'Airport',
       shop: 'Nearest shop',
     },
@@ -415,7 +415,7 @@ export const en: Dictionary = {
   },
 
   admin: {
-    gateTitle: 'TreeScape admin',
+    gateTitle: 'YOUR NAME admin',
     gateLead: 'Enter the access code.',
     gateCode: 'Access code',
     gateTotp: 'Code from your phone',
